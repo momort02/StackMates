@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Pages privées — inutile à indexer
+Disallow: /admin.html
+Disallow: /profile.html
+Disallow: /messages.html
+Disallow: /new-project.html
+
+Sitemap: https://stackmates.momort02.com/sitemap.xml
