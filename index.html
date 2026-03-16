@@ -1,111 +1,201 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StackMates | Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StackMates — Trouve ton équipe</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
 </head>
-
 <body>
-
-    <div class="app-container">
-        <aside class="sidebar">
-            <div class="logo">
-                <div class="logo-icon"></div>
-                <span>StackMates</span>
-            </div>
-            <nav>
-                <button class="nav-item active" id="navProjects">📊 Dashboard</button>
-                <button class="nav-item" id="navMyProjects">📁 Mes Projets</button>
-                <button class="nav-item" id="navMessages">💬 Messages</button>
-                <div class="nav-divider"></div>
-                <button class="nav-item" id="navSettings">⚙️ Paramètres</button>
-            </nav>
-            <div class="user-profile">
-                <div class="avatar" id="userAvatar">?</div>
-                <div class="user-info">
-                    <p id="userName">Utilisateur</p>
-                    <button id="logout">Déconnexion</button>
-                </div>
-            </div>
-        </aside>
-
-        <main class="main-content">
-            <header class="top-bar">
-                <h2 id="view-title">Dashboard</h2>
-                <div class="search-wrapper">
-                    <input type="text" id="search" placeholder="Rechercher...">
-                </div>
-                <button class="btn-primary" id="openModal">+ Nouveau Projet</button>
-            </header>
-
-            <div id="view-container" class="scroll-area">
-
-                <section id="view-dashboard" class="view">
-                    <div class="stats-grid">
-                        <div class="stat-card"><span>Total Projets</span>
-                            <h3 id="statTotal">0</h3>
-                        </div>
-                        <div class="stat-card"><span>Mes Projets</span>
-                            <h3 id="statMine">0</h3>
-                        </div>
-                        <div class="stat-card"><span>Messages</span>
-                            <h3 id="statMsgs">0</h3>
-                        </div>
-                    </div>
-                    <div id="projects" class="projects-grid"></div>
-                </section>
-
-                <section id="view-my-projects" class="view" style="display:none;">
-                    <div class="section-header">
-                        <h2>Gérer mes annonces</h2>
-                    </div>
-                    <div id="my-projects-list" class="projects-grid"></div>
-                </section>
-
-                <section id="view-messages" class="view" style="display:none;">
-                    <div class="messages-layout">
-                        <div class="conversations-list" id="conv-list">
-                            <p class="empty-hint">Aucune conversation pour le moment.</p>
-                        </div>
-                        <div class="chat-window">
-                            <p class="empty-hint">Sélectionnez une discussion</p>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="view-settings" class="view" style="display:none;">
-                    <div class="settings-card">
-                        <h3>Mon Profil</h3>
-                        <div class="input-group">
-                            <label>Nom d'affichage</label>
-                            <input type="text" id="settings-name">
-                        </div>
-                        <button class="btn-primary">Enregistrer les modifications</button>
-                    </div>
-                </section>
-            </div>
-        </main>
+  <nav class="navbar">
+    <a href="index.html" class="logo">Stack<span>Mates</span></a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Projets</a>
+      <a href="post.html">Poster</a>
+      <a href="profile.html">Profil</a>
     </div>
+    <a href="profile.html" class="btn-nav">Mon compte</a>
+  </nav>
 
-    <div id="createModal" class="modal">
-        <div class="modal-content">
-            <h3>Créer un nouveau projet</h3>
-            <input id="title" placeholder="Nom du projet">
-            <textarea id="description" placeholder="Description détaillée..."></textarea>
-            <input id="stack" placeholder="Stack technique (ex: React, Firebase)">
-            <div class="modal-actions">
-                <button class="btn-secondary" id="closeModal">Annuler</button>
-                <button class="btn-primary" id="createProject">Publier</button>
-            </div>
-        </div>
+  <section class="hero">
+    <div class="hero-bg"><div class="grid-lines"></div></div>
+    <div class="hero-content">
+      <div class="hero-badge">🔧 Open to collabs</div>
+      <h1>Trouve les devs<br /><span class="accent">qui manquent</span><br />à ton projet.</h1>
+      <p>Poste ton side project, décris ce dont tu as besoin,<br />et connecte-toi avec des développeurs motivés.</p>
+      <div class="hero-ctas">
+        <a href="post.html" class="btn-primary">Poster un projet</a>
+        <a href="#feed" class="btn-ghost">Explorer ↓</a>
+      </div>
     </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">142</span><span class="stat-label">projets actifs</span></div>
+      <div class="stat-sep"></div>
+      <div class="stat"><span class="stat-num">489</span><span class="stat-label">développeurs</span></div>
+      <div class="stat-sep"></div>
+      <div class="stat"><span class="stat-num">67</span><span class="stat-label">équipes formées</span></div>
+    </div>
+  </section>
 
-    <script type="module" src="app.js"></script>
+  <section class="filters-section" id="feed">
+    <div class="container">
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">Tous</button>
+        <button class="filter-btn" data-filter="recherche">🔍 En recherche</button>
+        <button class="filter-btn" data-filter="encours">⚡ En cours</button>
+        <button class="filter-btn" data-filter="termine">✅ Terminés</button>
+      </div>
+      <input type="text" class="search-input" placeholder="React, Firebase, Python..." id="searchInput" />
+    </div>
+  </section>
+
+  <section class="feed-section">
+    <div class="container">
+      <div class="feed" id="feed-grid">
+
+        <article class="card" data-status="recherche" data-tags="react firebase">
+          <div class="card-header">
+            <div class="card-avatar">MK</div>
+            <div class="card-meta">
+              <span class="card-author">mathis_k</span>
+              <span class="card-date">Il y a 2h</span>
+            </div>
+            <span class="card-status recherche">En recherche</span>
+          </div>
+          <h2 class="card-title">DevShow — Product Hunt pour étudiants</h2>
+          <p class="card-desc">Un site où les étudiants soumettent leurs projets et la communauté vote. Besoin d'un back-end solide et d'un designer pour l'UI.</p>
+          <div class="card-tags">
+            <span class="tag">React</span><span class="tag">Firebase</span><span class="tag">Tailwind</span>
+          </div>
+          <div class="card-needs">
+            <span class="need">🎨 Designer</span><span class="need">⚙️ Back-end dev</span>
+          </div>
+          <div class="card-footer">
+            <span class="card-applicants">3 candidatures</span>
+            <a href="project.html" class="btn-card">Voir le projet →</a>
+          </div>
+        </article>
+
+        <article class="card" data-status="recherche" data-tags="python django">
+          <div class="card-header">
+            <div class="card-avatar" style="background:var(--accent-green)">SL</div>
+            <div class="card-meta">
+              <span class="card-author">sarah_l</span>
+              <span class="card-date">Il y a 5h</span>
+            </div>
+            <span class="card-status recherche">En recherche</span>
+          </div>
+          <h2 class="card-title">BudgetTrack — Suivi financier étudiant</h2>
+          <p class="card-desc">App web pour gérer son budget mensuel avec des graphiques. Le back est quasi prêt, il faut quelqu'un pour l'UI et les animations.</p>
+          <div class="card-tags">
+            <span class="tag">Python</span><span class="tag">Django</span><span class="tag">Chart.js</span>
+          </div>
+          <div class="card-needs"><span class="need">🎨 Front-end dev</span></div>
+          <div class="card-footer">
+            <span class="card-applicants">1 candidature</span>
+            <a href="project.html" class="btn-card">Voir le projet →</a>
+          </div>
+        </article>
+
+        <article class="card featured" data-status="encours" data-tags="react node mongodb">
+          <div class="card-badge-featured">⭐ Populaire</div>
+          <div class="card-header">
+            <div class="card-avatar" style="background:var(--accent-purple)">TN</div>
+            <div class="card-meta">
+              <span class="card-author">theo_n</span>
+              <span class="card-date">Il y a 1j</span>
+            </div>
+            <span class="card-status encours">En cours</span>
+          </div>
+          <h2 class="card-title">AlgoDaily — Défi algo quotidien</h2>
+          <p class="card-desc">LeetCode mais en français et fait par des étudiants. Éditeur de code intégré, classement hebdo, solution le lendemain. Équipe de 3, on cherche un 4e.</p>
+          <div class="card-tags">
+            <span class="tag">React</span><span class="tag">Node.js</span><span class="tag">MongoDB</span>
+          </div>
+          <div class="card-needs"><span class="need">⚙️ Full-stack dev</span></div>
+          <div class="card-footer">
+            <span class="card-applicants">8 candidatures</span>
+            <a href="project.html" class="btn-card">Voir le projet →</a>
+          </div>
+        </article>
+
+        <article class="card" data-status="recherche" data-tags="flutter dart firebase">
+          <div class="card-header">
+            <div class="card-avatar" style="background:var(--accent-orange)">JB</div>
+            <div class="card-meta">
+              <span class="card-author">jules_b</span>
+              <span class="card-date">Il y a 2j</span>
+            </div>
+            <span class="card-status recherche">En recherche</span>
+          </div>
+          <h2 class="card-title">HabitForge — Tracker d'habitudes social</h2>
+          <p class="card-desc">App mobile Flutter pour créer des défis d'habitudes avec des amis. Streak, notifications, classement. Cherche un dev mobile expérimenté.</p>
+          <div class="card-tags">
+            <span class="tag">Flutter</span><span class="tag">Dart</span><span class="tag">Firebase</span>
+          </div>
+          <div class="card-needs">
+            <span class="need">📱 Dev mobile</span><span class="need">🎨 Designer</span>
+          </div>
+          <div class="card-footer">
+            <span class="card-applicants">5 candidatures</span>
+            <a href="project.html" class="btn-card">Voir le projet →</a>
+          </div>
+        </article>
+
+        <article class="card" data-status="termine" data-tags="html css js">
+          <div class="card-header">
+            <div class="card-avatar" style="background:#555">AM</div>
+            <div class="card-meta">
+              <span class="card-author">anna_m</span>
+              <span class="card-date">Il y a 5j</span>
+            </div>
+            <span class="card-status termine">Terminé</span>
+          </div>
+          <h2 class="card-title">PortfolioGen — Générateur de portfolio</h2>
+          <p class="card-desc">Un générateur de portfolio statique avec templates et export ZIP. Projet fini, open-source dispo sur GitHub.</p>
+          <div class="card-tags">
+            <span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span>
+          </div>
+          <div class="card-needs"></div>
+          <div class="card-footer">
+            <span class="card-applicants">Équipe de 2</span>
+            <a href="project.html" class="btn-card">Voir le projet →</a>
+          </div>
+        </article>
+
+        <article class="card" data-status="recherche" data-tags="vue firebase">
+          <div class="card-header">
+            <div class="card-avatar" style="background:var(--accent)">RD</div>
+            <div class="card-meta">
+              <span class="card-author">romain_d</span>
+              <span class="card-date">Il y a 3j</span>
+            </div>
+            <span class="card-status recherche">En recherche</span>
+          </div>
+          <h2 class="card-title">NoteCollab — Notes partagées en temps réel</h2>
+          <p class="card-desc">Un Google Docs minimaliste pour les révisions en groupe. Markdown support, partage par lien, historique de versions simplifié.</p>
+          <div class="card-tags">
+            <span class="tag">Vue.js</span><span class="tag">Firebase</span>
+          </div>
+          <div class="card-needs"><span class="need">⚙️ Back-end dev</span></div>
+          <div class="card-footer">
+            <span class="card-applicants">2 candidatures</span>
+            <a href="project.html" class="btn-card">Voir le projet →</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <span class="logo">Stack<span>Mates</span></span>
+      <span class="footer-text">Fait par des devs, pour des devs.</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
 </body>
-
 </html>
