@@ -1,55 +1,22 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>StackMates — Nouveau projet</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    .new-project-page {
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem 4rem;
-    }
-
-    .form-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2rem;
-    }
-
-    .roles-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
+    .new-project-page { max-width: 640px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; }
+    .roles-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
     .role-toggle {
-      padding: 0.35rem 0.9rem;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.18s;
-      font-family: 'DM Sans', sans-serif;
+      padding: 0.35rem 0.9rem; border-radius: 999px;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--muted); font-size: 0.85rem; cursor: pointer;
+      transition: all 0.18s; font-family: 'DM Sans', sans-serif;
     }
-
-    .role-toggle.selected {
-      background: rgba(255, 107, 107, 0.15);
-      border-color: var(--accent2);
-      color: var(--accent2);
-    }
-
-    .char-count {
-      font-size: 0.75rem;
-      color: var(--muted);
-      text-align: right;
-    }
-
+    .role-toggle.selected { background: rgba(255,107,107,0.15); border-color: var(--accent2); color: var(--accent2); }
+    .char-count { font-size: 0.75rem; color: var(--muted); text-align: right; }
     .form-section-title {
       font-family: 'Syne', sans-serif;
       font-weight: 700;
@@ -62,205 +29,229 @@
       border-bottom: 1px solid var(--border);
     }
   </style>
+
+<style>
+#site-banner{display:none;background:var(--accent);color:#fff;text-align:center;padding:0.55rem 1rem;font-size:0.88rem;font-weight:500;position:sticky;top:64px;z-index:99}
+</style>
 </head>
-
 <body>
+<div id="site-banner"></div>
 
-  <nav>
-    <a href="index.html" class="nav-logo">Stack<span>Mates</span></a>
-    <ul class="nav-links">
-      <li><a href="projects.html">Projets</a></li>
-      <li><a href="profile.html">Mon profil</a></li>
-    </ul>
-  </nav>
+<nav>
+  <a href="index.html" class="nav-logo">Stack<span>Mates</span></a>
+  <ul class="nav-links">
+    <li><a href="projects.html">Projets</a></li>
+    <li><a href="profile.html">Mon profil</a></li>
+  </ul>
+</nav>
 
-  <div class="new-project-page">
-    <div class="page-header" style="padding:2rem 0 1.5rem">
-      <h1>Nouveau projet</h1>
-      <p>Décris ton idée et trouve les mates qu'il te faut.</p>
-    </div>
-
-    <div class="form-card">
-      <div class="form-section-title">Infos générales</div>
-
-      <div class="form-group">
-        <label>Titre du projet *</label>
-        <input type="text" id="title" placeholder="ex: App de suivi de films maison" maxlength="80" />
-        <div class="char-count" id="title-count">0/80</div>
-      </div>
-
-      <div class="form-group">
-        <label>Description *</label>
-        <textarea id="description" placeholder="Décris ton projet, ton objectif, où t'en es..." maxlength="500"
-          rows="5"></textarea>
-        <div class="char-count" id="desc-count">0/500</div>
-      </div>
-
-      <div class="form-group">
-        <label>Lien GitHub (optionnel)</label>
-        <input type="url" id="github" placeholder="https://github.com/ton-user/ton-repo" />
-      </div>
-
-      <div class="form-section-title" style="margin-top:1.5rem">Stack technique</div>
-
-      <div class="form-group">
-        <label>Technologies utilisées</label>
-        <div class="tags-input-wrapper" id="stack-wrapper">
-          <input type="text" id="stack-input" placeholder="ex: React, Firebase... (Entrée pour ajouter)" />
-        </div>
-      </div>
-
-      <div class="form-section-title" style="margin-top:1.5rem">Équipe recherchée</div>
-
-      <div class="form-group">
-        <label>Profils nécessaires</label>
-        <div class="roles-grid" id="roles-grid">
-          <button class="role-toggle" data-role="Frontend">🎨 Frontend</button>
-          <button class="role-toggle" data-role="Backend">⚙️ Backend</button>
-          <button class="role-toggle" data-role="Fullstack">🔄 Fullstack</button>
-          <button class="role-toggle" data-role="Designer">✏️ Designer</button>
-          <button class="role-toggle" data-role="Mobile">📱 Mobile</button>
-          <button class="role-toggle" data-role="DevOps">🛠 DevOps</button>
-          <button class="role-toggle" data-role="Data">📊 Data</button>
-          <button class="role-toggle" data-role="IA/ML">🤖 IA/ML</button>
-          <button class="role-toggle" data-role="Game Dev">🎮 Game Dev</button>
-          <button class="role-toggle" data-role="Autre">➕ Autre</button>
-        </div>
-      </div>
-
-      <div class="form-group" style="margin-top:1.5rem">
-        <label>Statut du projet</label>
-        <select id="status">
-          <option value="open">🟢 Ouvert — je cherche des mates</option>
-          <option value="inprogress">🟡 En cours — équipe partiellement formée</option>
-        </select>
-      </div>
-
-      <div style="display:flex;gap:0.8rem;margin-top:1.5rem">
-        <button class="btn btn-ghost" onclick="window.location.href='projects.html'">Annuler</button>
-        <button class="btn btn-primary" id="btn-submit" style="flex:1">Publier le projet ✨</button>
-      </div>
-    </div>
+<div class="new-project-page">
+  <div class="page-header" style="padding:2rem 0 1.5rem">
+    <h1>Nouveau projet</h1>
+    <p>Décris ton idée et trouve les mates qu'il te faut.</p>
   </div>
 
-  <div id="toast"></div>
+  <div class="form-card">
+    <div class="form-section-title">Infos générales</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    <div class="form-group">
+      <label>Titre du projet *</label>
+      <input type="text" id="title" placeholder="ex: App de suivi de films maison" maxlength="80" />
+      <div class="char-count" id="title-count">0/80</div>
+    </div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBWqF4_uiur-XOD8lQy2X9cJciWo9vkUZg",
-      authDomain: "stackmates-a674e.firebaseapp.com",
-      projectId: "stackmates-a674e",
-      storageBucket: "stackmates-a674e.firebasestorage.app",
-      messagingSenderId: "485803590862",
-      appId: "1:485803590862:web:875a4dda0c2c31605dbc9f"
-    };
+    <div class="form-group">
+      <label>Description *</label>
+      <textarea id="description" placeholder="Décris ton projet, ton objectif, où t'en es..." maxlength="500" rows="5"></textarea>
+      <div class="char-count" id="desc-count">0/500</div>
+    </div>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    let currentUser = null;
+    <div class="form-group">
+      <label>Lien GitHub (optionnel)</label>
+      <input type="url" id="github" placeholder="https://github.com/ton-user/ton-repo" />
+    </div>
 
-    onAuthStateChanged(auth, (user) => {
-      if (!user) window.location.href = 'auth.html';
-      currentUser = user;
-    });
+    <div class="form-section-title" style="margin-top:1.5rem">Stack technique</div>
 
-    function showToast(msg, type = '') {
-      const t = document.getElementById('toast');
-      t.textContent = msg; t.className = 'show ' + type;
-      setTimeout(() => t.className = '', 3000);
-    }
+    <div class="form-group">
+      <label>Technologies utilisées</label>
+      <div class="tags-input-wrapper" id="stack-wrapper">
+        <input type="text" id="stack-input" placeholder="ex: React, Firebase... (Entrée pour ajouter)" />
+      </div>
+    </div>
 
-    // Tag input
-    const stackTags = [];
-    const stackInput = document.getElementById('stack-input');
-    const stackWrapper = document.getElementById('stack-wrapper');
+    <div class="form-section-title" style="margin-top:1.5rem">Équipe recherchée</div>
 
-    stackInput.onkeydown = (e) => {
-      if ((e.key === 'Enter' || e.key === ',') && stackInput.value.trim()) {
-        e.preventDefault();
-        const val = stackInput.value.trim().replace(/,$/, '');
-        if (val && !stackTags.includes(val) && stackTags.length < 10) {
-          stackTags.push(val);
-          renderTags();
-          stackInput.value = '';
-        }
-      }
-      if (e.key === 'Backspace' && !stackInput.value && stackTags.length) {
-        stackTags.pop();
+    <div class="form-group">
+      <label>Profils nécessaires</label>
+      <div class="roles-grid" id="roles-grid">
+        <button class="role-toggle" data-role="Frontend">🎨 Frontend</button>
+        <button class="role-toggle" data-role="Backend">⚙️ Backend</button>
+        <button class="role-toggle" data-role="Fullstack">🔄 Fullstack</button>
+        <button class="role-toggle" data-role="Designer">✏️ Designer</button>
+        <button class="role-toggle" data-role="Mobile">📱 Mobile</button>
+        <button class="role-toggle" data-role="DevOps">🛠 DevOps</button>
+        <button class="role-toggle" data-role="Data">📊 Data</button>
+        <button class="role-toggle" data-role="IA/ML">🤖 IA/ML</button>
+        <button class="role-toggle" data-role="Game Dev">🎮 Game Dev</button>
+        <button class="role-toggle" data-role="Autre">➕ Autre</button>
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-top:1.5rem">
+      <label>Statut du projet</label>
+      <select id="status">
+        <option value="open">🟢 Ouvert — je cherche des mates</option>
+        <option value="inprogress">🟡 En cours — équipe partiellement formée</option>
+      </select>
+    </div>
+
+    <div style="display:flex;gap:0.8rem;margin-top:1.5rem">
+      <button class="btn btn-ghost" onclick="window.location.href='projects.html'">Annuler</button>
+      <button class="btn btn-primary" id="btn-submit" style="flex:1">Publier le projet ✨</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBWqF4_uiur-XOD8lQy2X9cJciWo9vkUZg",
+    authDomain: "stackmates-a674e.firebaseapp.com",
+    projectId: "stackmates-a674e",
+    storageBucket: "stackmates-a674e.firebasestorage.app",
+    messagingSenderId: "485803590862",
+    appId: "1:485803590862:web:875a4dda0c2c31605dbc9f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  let currentUser = null;
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) window.location.href = 'auth.html';
+    currentUser = user;
+  });
+
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = 'show ' + type;
+    setTimeout(() => t.className = '', 3000);
+  }
+
+  // Tag input
+  const stackTags = [];
+  const stackInput = document.getElementById('stack-input');
+  const stackWrapper = document.getElementById('stack-wrapper');
+
+  stackInput.onkeydown = (e) => {
+    if ((e.key === 'Enter' || e.key === ',') && stackInput.value.trim()) {
+      e.preventDefault();
+      const val = stackInput.value.trim().replace(/,$/, '');
+      if (val && !stackTags.includes(val) && stackTags.length < 10) {
+        stackTags.push(val);
         renderTags();
+        stackInput.value = '';
       }
-    };
-
-    function renderTags() {
-      document.querySelectorAll('.tag').forEach(t => t.remove());
-      stackTags.forEach((tag, i) => {
-        const el = document.createElement('span');
-        el.className = 'tag';
-        el.innerHTML = `${tag}<button onclick="removeTag(${i})">×</button>`;
-        stackWrapper.insertBefore(el, stackInput);
-      });
     }
+    if (e.key === 'Backspace' && !stackInput.value && stackTags.length) {
+      stackTags.pop();
+      renderTags();
+    }
+  };
 
-    window.removeTag = (i) => { stackTags.splice(i, 1); renderTags(); };
-
-    // Char counters
-    document.getElementById('title').oninput = (e) => {
-      document.getElementById('title-count').textContent = `${e.target.value.length}/80`;
-    };
-    document.getElementById('description').oninput = (e) => {
-      document.getElementById('desc-count').textContent = `${e.target.value.length}/500`;
-    };
-
-    // Role toggles
-    const selectedRoles = new Set();
-    document.querySelectorAll('.role-toggle').forEach(btn => {
-      btn.onclick = () => {
-        btn.classList.toggle('selected');
-        if (btn.classList.contains('selected')) selectedRoles.add(btn.dataset.role);
-        else selectedRoles.delete(btn.dataset.role);
-      };
+  function renderTags() {
+    document.querySelectorAll('.tag').forEach(t => t.remove());
+    stackTags.forEach((tag, i) => {
+      const el = document.createElement('span');
+      el.className = 'tag';
+      el.innerHTML = `${tag}<button onclick="removeTag(${i})">×</button>`;
+      stackWrapper.insertBefore(el, stackInput);
     });
+  }
 
-    // Submit
-    document.getElementById('btn-submit').onclick = async () => {
-      const title = document.getElementById('title').value.trim();
-      const description = document.getElementById('description').value.trim();
-      if (!title) return showToast('Le titre est requis.', 'error');
-      if (!description) return showToast('La description est requise.', 'error');
-      if (selectedRoles.size === 0) return showToast('Sélectionne au moins un profil recherché.', 'error');
+  window.removeTag = (i) => { stackTags.splice(i, 1); renderTags(); };
 
-      const btn = document.getElementById('btn-submit');
-      btn.disabled = true;
-      btn.textContent = 'Publication...';
+  // Char counters
+  document.getElementById('title').oninput = (e) => {
+    document.getElementById('title-count').textContent = `${e.target.value.length}/80`;
+  };
+  document.getElementById('description').oninput = (e) => {
+    document.getElementById('desc-count').textContent = `${e.target.value.length}/500`;
+  };
 
-      try {
-        await addDoc(collection(db, 'projects'), {
-          title,
-          description,
-          github: document.getElementById('github').value.trim(),
-          stack: [...stackTags],
-          rolesNeeded: [...selectedRoles],
-          status: document.getElementById('status').value,
-          authorUid: currentUser.uid,
-          authorName: currentUser.displayName || currentUser.email.split('@')[0],
-          applicants: [],
-          createdAt: serverTimestamp()
-        });
-        showToast('Projet publié ! 🚀', 'success');
-        setTimeout(() => window.location.href = 'projects.html', 1200);
-      } catch (e) {
-        showToast('Erreur : ' + e.message, 'error');
-        btn.disabled = false;
-        btn.textContent = 'Publier le projet ✨';
-      }
+  // Role toggles
+  const selectedRoles = new Set();
+  document.querySelectorAll('.role-toggle').forEach(btn => {
+    btn.onclick = () => {
+      btn.classList.toggle('selected');
+      if (btn.classList.contains('selected')) selectedRoles.add(btn.dataset.role);
+      else selectedRoles.delete(btn.dataset.role);
     };
-  </script>
+  });
 
+  // Submit
+  document.getElementById('btn-submit').onclick = async () => {
+    const title = document.getElementById('title').value.trim();
+    const description = document.getElementById('description').value.trim();
+    if (!title) return showToast('Le titre est requis.', 'error');
+    if (!description) return showToast('La description est requise.', 'error');
+    if (selectedRoles.size === 0) return showToast('Sélectionne au moins un profil recherché.', 'error');
+
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.textContent = 'Publication...';
+
+    try {
+      await addDoc(collection(db, 'projects'), {
+        title,
+        description,
+        github: document.getElementById('github').value.trim(),
+        stack: [...stackTags],
+        rolesNeeded: [...selectedRoles],
+        status: document.getElementById('status').value,
+        authorUid: currentUser.uid,
+        authorName: currentUser.displayName || currentUser.email.split('@')[0],
+        applicants: [],
+        createdAt: serverTimestamp()
+      });
+      showToast('Projet publié ! 🚀', 'success');
+      setTimeout(() => window.location.href = 'projects.html', 1200);
+    } catch(e) {
+      showToast('Erreur : ' + e.message, 'error');
+      btn.disabled = false;
+      btn.textContent = 'Publier le projet ✨';
+    }
+  };
+</script>
+
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  const app = initializeApp({
+    apiKey:"AIzaSyBWqF4_uiur-XOD8lQy2X9cJciWo9vkUZg",
+    authDomain:"stackmates-a674e.firebaseapp.com",
+    projectId:"stackmates-a674e",
+    storageBucket:"stackmates-a674e.firebasestorage.app",
+    messagingSenderId:"485803590862",
+    appId:"1:485803590862:web:875a4dda0c2c31605dbc9f"
+  });
+  const db = getFirestore(app);
+  getDoc(doc(db,'settings','global')).then(snap=>{
+    const text = snap.exists() ? snap.data().banner || '' : '';
+    if(text){
+      const b = document.getElementById('site-banner');
+      b.textContent = text;
+      b.style.display = 'block';
+    }
+  }).catch(()=>{});
+</script>
 </body>
-
 </html>

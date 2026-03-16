@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StackMates — Administration</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .admin-layout { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 64px); }
+    .admin-sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 1.5rem 0; position: sticky; top: 64px; height: calc(100vh - 64px); overflow-y: auto; }
+    .admin-sidebar-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 0 1.2rem; margin-bottom: 0.5rem; }
+    .admin-nav-item { display: flex; align-items: center; gap: 0.7rem; padding: 0.65rem 1.2rem; cursor: pointer; color: var(--muted); font-size: 0.88rem; font-weight: 500; border-left: 2px solid transparent; transition: all 0.15s; }
+    .admin-nav-item:hover { background: var(--surface2); color: var(--text); }
+    .admin-nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(108,99,255,0.07); }
+    .admin-nav-sep { height: 1px; background: var(--border); margin: 0.8rem 1.2rem; }
+    .admin-main { padding: 2rem; overflow-y: auto; }
+    .admin-section { display: none; }
+    .admin-section.active { display: block; }
+    .admin-section-title { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 0.3rem; }
+    .admin-section-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 1.8rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem 1.4rem; }
+    .stat-card .label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+    .stat-card .value { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; }
+    .stat-card.accent .value { color: var(--accent); }
+    .stat-card.green .value { color: var(--green); }
+    .stat-card.red .value { color: var(--accent2); }
+    .admin-table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem; }
+    .admin-table-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.3rem; border-bottom: 1px solid var(--border); gap: 1rem; }
+    .admin-table-header h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; }
+    .admin-search { padding: 0.4rem 0.8rem; font-size: 0.82rem; width: 200px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: 'DM Sans',sans-serif; outline: none; }
+    .admin-search:focus { border-color: var(--accent); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    thead th { text-align: left; padding: 0.7rem 1rem; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--surface2); }
+    tbody tr { border-bottom: 1px solid rgba(42,47,66,0.5); transition: background 0.12s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--surface2); }
+    td { padding: 0.75rem 1rem; vertical-align: middle; }
+    .td-user { display: flex; align-items: center; gap: 0.7rem; }
+    .td-av { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg,var(--accent),var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .td-av img { width: 100%; height: 100%; object-fit: cover; }
+    .td-name { font-weight: 600; }
+    .td-sub { font-size: 0.75rem; color: var(--muted); }
+    .action-btns { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .btn-sm { padding: 0.28rem 0.6rem; font-size: 0.76rem; border-radius: var(--radius-sm); cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); transition: all 0.15s; font-family: 'DM Sans',sans-serif; white-space: nowrap; }
+    .btn-sm:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-sm.danger:hover { border-color: var(--accent2); color: var(--accent2); }
+    .role-select { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: 'DM Sans',sans-serif; font-size: 0.78rem; padding: 0.25rem 0.5rem; outline: none; cursor: pointer; }
+    .badge-admin { background: rgba(255,200,80,0.15); color: #ffc850; border: 1px solid rgba(255,200,80,0.3); }
+    .chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.3rem 1.5rem; margin-bottom: 1.5rem; }
+    .chart-title { font-family: 'Syne',sans-serif; font-weight: 700; font-size: 0.9rem; margin-bottom: 1.2rem; }
+    .bar-chart { display: flex; align-items: flex-end; gap: 0.6rem; height: 110px; }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; height: 100%; justify-content: flex-end; }
+    .bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; transition: opacity 0.15s; }
+    .bar:hover { opacity: 0.8; }
+    .bar-label { font-size: 0.65rem; color: var(--muted); text-align: center; }
+    .bar-val { font-size: 0.7rem; color: var(--text); font-weight: 600; }
+    .log-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .log-item { display: flex; align-items: flex-start; gap: 0.8rem; padding: 0.7rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.84rem; }
+    .log-time { font-size: 0.75rem; color: var(--muted); flex-shrink: 0; margin-left: auto; }
+    .access-denied { display: flex; flex-direction: column; align-items: center; justify-content: center; height: calc(100vh - 64px); gap: 1rem; color: var(--muted); }
+    .access-denied .icon { font-size: 3rem; }
+    .access-denied h2 { font-family: 'Syne',sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--text); }
+    .empty-row td { text-align: center; color: var(--muted); padding: 2rem; }
+    /* BANNER */
+    #site-banner { display: none; background: var(--accent); color: #fff; text-align: center; padding: 0.6rem 1rem; font-size: 0.88rem; font-weight: 500; }
+    @media (max-width: 768px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .admin-sidebar { position: static; height: auto; display: flex; flex-wrap: wrap; padding: 0.5rem; gap: 0.2rem; border-right: none; border-bottom: 1px solid var(--border); }
+      .admin-nav-item { border-left: none; border-radius: var(--radius-sm); padding: 0.4rem 0.7rem; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Bannière globale -->
+<div id="site-banner"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">Stack<span>Mates</span> <span style="font-size:0.7rem;color:var(--accent2);font-family:'DM Sans',sans-serif;font-weight:600">ADMIN</span></a>
+  <ul class="nav-links">
+    <li><a href="projects.html">Projets</a></li>
+    <li><a href="messages.html">Messages</a></li>
+    <li><a href="profile.html">Mon profil</a></li>
+    <li><a href="#" id="btn-logout">Déconnexion</a></li>
+  </ul>
+</nav>
+
+<div class="access-denied" id="access-denied" style="display:none">
+  <div class="icon">🔒</div>
+  <h2>Accès refusé</h2>
+  <p>Tu n'as pas les droits administrateur.</p>
+  <a href="index.html" class="btn btn-primary">Retour à l'accueil</a>
+</div>
+
+<div class="admin-layout" id="admin-panel" style="display:none">
+
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-title">Dashboard</div>
+    <div class="admin-nav-item active" data-s="overview"><span>📊</span> Vue globale</div>
+    <div class="admin-nav-sep"></div>
+    <div class="admin-sidebar-title">Gestion</div>
+    <div class="admin-nav-item" data-s="users"><span>👥</span> Utilisateurs</div>
+    <div class="admin-nav-item" data-s="projects"><span>📁</span> Projets</div>
+    <div class="admin-nav-item" data-s="convos"><span>💬</span> Conversations</div>
+    <div class="admin-nav-sep"></div>
+    <div class="admin-sidebar-title">Outils</div>
+    <div class="admin-nav-item" data-s="logs"><span>📋</span> Logs</div>
+    <div class="admin-nav-item" data-s="settings"><span>⚙️</span> Paramètres</div>
+  </aside>
+
+  <main class="admin-main">
+
+    <!-- OVERVIEW -->
+    <section class="admin-section active" id="section-overview">
+      <div class="admin-section-title">Vue globale</div>
+      <div class="admin-section-sub">Statistiques en temps réel de la plateforme.</div>
+      <div class="stats-grid">
+        <div class="stat-card accent"><div class="label">Utilisateurs</div><div class="value" id="s-users">—</div></div>
+        <div class="stat-card green"><div class="label">Projets ouverts</div><div class="value" id="s-open">—</div></div>
+        <div class="stat-card"><div class="label">Projets total</div><div class="value" id="s-total">—</div></div>
+        <div class="stat-card"><div class="label">Conversations</div><div class="value" id="s-convos">—</div></div>
+        <div class="stat-card"><div class="label">Candidatures</div><div class="value" id="s-apps">—</div></div>
+        <div class="stat-card red"><div class="label">Admins</div><div class="value" id="s-admins">—</div></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Projets par statut</div>
+        <div class="bar-chart" id="chart-status"></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Top technologies</div>
+        <div class="bar-chart" id="chart-stacks"></div>
+      </div>
+      <div class="admin-table-wrap">
+        <div class="admin-table-header"><h3>Derniers inscrits</h3></div>
+        <table><thead><tr><th>Utilisateur</th><th>Email</th><th>Stack</th><th>Inscrit</th></tr></thead>
+        <tbody id="tb-recent"></tbody></table>
+      </div>
+    </section>
+
+    <!-- USERS -->
+    <section class="admin-section" id="section-users">
+      <div class="admin-section-title">Utilisateurs</div>
+      <div class="admin-section-sub">Gère les comptes et les rôles.</div>
+      <div class="admin-table-wrap">
+        <div class="admin-table-header">
+          <h3 id="lbl-users">Chargement...</h3>
+          <input class="admin-search" id="search-users" placeholder="🔍 Rechercher..." />
+        </div>
+        <table>
+          <thead><tr><th>Utilisateur</th><th>Email</th><th>Stack</th><th>Rôle</th><th>Inscrit</th><th>Actions</th></tr></thead>
+          <tbody id="tb-users"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section class="admin-section" id="section-projects">
+      <div class="admin-section-title">Projets</div>
+      <div class="admin-section-sub">Modère tous les projets de la plateforme.</div>
+      <div class="filters" id="proj-filters">
+        <button class="filter-btn active" data-s="all">Tous</button>
+        <button class="filter-btn" data-s="open">🟢 Ouverts</button>
+        <button class="filter-btn" data-s="inprogress">🟡 En cours</button>
+        <button class="filter-btn" data-s="done">⚫ Terminés</button>
+      </div>
+      <div class="admin-table-wrap">
+        <div class="admin-table-header">
+          <h3 id="lbl-projects">Chargement...</h3>
+          <input class="admin-search" id="search-projects" placeholder="🔍 Rechercher..." />
+        </div>
+        <table>
+          <thead><tr><th>Projet</th><th>Auteur</th><th>Stack</th><th>Statut</th><th>Candidats</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody id="tb-projects"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CONVERSATIONS -->
+    <section class="admin-section" id="section-convos">
+      <div class="admin-section-title">Conversations</div>
+      <div class="admin-section-sub">Vue d'ensemble des échanges.</div>
+      <div class="admin-table-wrap">
+        <div class="admin-table-header"><h3 id="lbl-convos">Chargement...</h3></div>
+        <table>
+          <thead><tr><th>Participants</th><th>Dernier message</th><th>Activité</th><th>Actions</th></tr></thead>
+          <tbody id="tb-convos"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- LOGS -->
+    <section class="admin-section" id="section-logs">
+      <div class="admin-section-title">Logs d'activité</div>
+      <div class="admin-section-sub">Historique des actions d'administration.</div>
+      <div class="log-list" id="log-list"><div style="color:var(--muted);font-size:0.9rem">Aucune action effectuée.</div></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="admin-section" id="section-settings">
+      <div class="admin-section-title">Paramètres</div>
+      <div class="admin-section-sub">Configuration de la plateforme.</div>
+
+      <div class="card" style="max-width:520px;margin-bottom:1.2rem">
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:1rem">📢 Bannière globale</h3>
+        <p style="color:var(--muted);font-size:0.85rem;margin-bottom:0.8rem">Affiché en haut de toutes les pages pour les visiteurs connectés. Laisser vide pour désactiver.</p>
+        <div class="form-group">
+          <label>Texte de la bannière</label>
+          <input type="text" id="banner-input" placeholder="ex: Maintenance prévue samedi 20h..." />
+        </div>
+        <div id="banner-preview" style="display:none;background:var(--accent);color:#fff;padding:0.5rem 1rem;border-radius:var(--radius-sm);font-size:0.85rem;margin-bottom:0.8rem"></div>
+        <div style="display:flex;gap:0.6rem">
+          <button class="btn btn-primary" id="btn-save-banner">💾 Sauvegarder</button>
+          <button class="btn btn-ghost" id="btn-clear-banner">✕ Désactiver</button>
+        </div>
+        <div id="banner-status" style="font-size:0.78rem;color:var(--muted);margin-top:0.5rem"></div>
+      </div>
+
+      <div class="card" style="max-width:520px;margin-bottom:1.2rem">
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:1rem">👑 Ajouter un admin</h3>
+        <div class="form-group">
+          <label>Email de l'utilisateur</label>
+          <input type="email" id="admin-email-input" placeholder="user@example.com" />
+        </div>
+        <button class="btn btn-primary" id="btn-add-admin">Promouvoir en admin</button>
+      </div>
+
+      <div class="card" style="max-width:520px">
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.5rem;color:var(--accent2)">⚠️ Zone dangereuse</h3>
+        <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem">Actions irréversibles.</p>
+        <button class="btn btn-danger" id="btn-purge-done">🗑 Supprimer tous les projets terminés</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Modal confirmation -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal" style="max-width:380px">
+    <h2 id="confirm-title" style="margin-bottom:0.5rem">Confirmer</h2>
+    <p id="confirm-text" style="color:var(--muted);font-size:0.9rem;margin-bottom:1.5rem"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="confirm-cancel">Annuler</button>
+      <button class="btn btn-danger" id="confirm-ok">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore, collection, doc, getDoc, getDocs,
+    setDoc, updateDoc, deleteDoc, onSnapshot,
+    serverTimestamp, writeBatch
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBWqF4_uiur-XOD8lQy2X9cJciWo9vkUZg",
+    authDomain: "stackmates-a674e.firebaseapp.com",
+    projectId: "stackmates-a674e",
+    storageBucket: "stackmates-a674e.firebasestorage.app",
+    messagingSenderId: "485803590862",
+    appId: "1:485803590862:web:875a4dda0c2c31605dbc9f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let currentUser = null;
+  let allUsers = [], allProjects = [], allConvos = [];
+  let logs = [];
+  let projFilter = 'all';
+  let confirmCb = null;
+
+  // ── UTILS ──────────────────────────────────────────────────────────────────
+  const $ = id => document.getElementById(id);
+  function toast(msg, type = '') {
+    const t = $('toast'); t.textContent = msg; t.className = 'show ' + type;
+    setTimeout(() => t.className = '', 3000);
+  }
+  function ini(name) { return (name || '?').slice(0, 2).toUpperCase(); }
+  function fdate(ts) {
+    if (!ts) return '—';
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
+  }
+  function fdatetime(ts) {
+    if (!ts) return '—';
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }) + ' ' +
+           d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  }
+  function avHtml(u, size = 32) {
+    const s = `width:${size}px;height:${size}px;font-size:${size*0.2}rem`;
+    if (u?.photoBase64) return `<div class="td-av" style="${s}"><img src="${u.photoBase64}" /></div>`;
+    return `<div class="td-av" style="${s}">${ini(u?.username)}</div>`;
+  }
+  function sbadge(s) {
+    const m = { open:'<span class="badge badge-open">🟢 Ouvert</span>', inprogress:'<span class="badge badge-inprogress">🟡 En cours</span>', done:'<span class="badge badge-done">⚫ Terminé</span>' };
+    return m[s] || m.open;
+  }
+  function emptyRow(cols, msg) {
+    return `<tr class="empty-row"><td colspan="${cols}">${msg}</td></tr>`;
+  }
+
+  // ── LOGS ───────────────────────────────────────────────────────────────────
+  function addLog(icon, action, detail = '') {
+    logs.unshift({ icon, action, detail, time: new Date() });
+    if (logs.length > 100) logs.pop();
+    renderLogs();
+  }
+  function renderLogs() {
+    const el = $('log-list');
+    if (!logs.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.9rem">Aucune action.</div>'; return; }
+    el.innerHTML = logs.map(l => `
+      <div class="log-item">
+        <span>${l.icon}</span>
+        <div style="flex:1"><strong>${l.action}</strong>${l.detail ? ' — ' + l.detail : ''}</div>
+        <span class="log-time">${l.time.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span>
+      </div>`).join('');
+  }
+
+  // ── CONFIRM MODAL ──────────────────────────────────────────────────────────
+  function confirm(title, text, cb) {
+    $('confirm-title').textContent = title;
+    $('confirm-text').textContent = text;
+    confirmCb = cb;
+    $('modal-confirm').classList.add('open');
+  }
+  $('confirm-cancel').onclick = () => { $('modal-confirm').classList.remove('open'); confirmCb = null; };
+  $('confirm-ok').onclick = () => { $('modal-confirm').classList.remove('open'); if (confirmCb) confirmCb(); confirmCb = null; };
+
+  // ── NAV ────────────────────────────────────────────────────────────────────
+  document.querySelectorAll('.admin-nav-item').forEach(item => {
+    item.onclick = () => {
+      document.querySelectorAll('.admin-nav-item').forEach(i => i.classList.remove('active'));
+      document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+      item.classList.add('active');
+      $('section-' + item.dataset.s).classList.add('active');
+    };
+  });
+
+  $('btn-logout').onclick = async e => { e.preventDefault(); await signOut(auth); window.location.href = 'index.html'; };
+
+  // ── AUTH ───────────────────────────────────────────────────────────────────
+  onAuthStateChanged(auth, async user => {
+    if (!user) return (window.location.href = 'auth.html');
+    currentUser = user;
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (!snap.exists() || snap.data().role !== 'admin') {
+      $('access-denied').style.display = 'flex';
+      return;
+    }
+    $('admin-panel').style.display = 'grid';
+    init();
+  });
+
+  // ── INIT ───────────────────────────────────────────────────────────────────
+  async function init() {
+    await loadUsers();   // users en premier (needed for convos render)
+    loadProjects();
+    loadConvos();
+    loadBanner();
+  }
+
+  // ── USERS ──────────────────────────────────────────────────────────────────
+  async function loadUsers() {
+    try {
+      const snap = await getDocs(collection(db, 'users'));
+      allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      allUsers.sort((a, b) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
+      renderOverview();
+      renderUsers();
+    } catch(e) {
+      toast('Erreur users : ' + e.message, 'error');
+      console.error(e);
+    }
+  }
+
+  function renderUsers(q = '') {
+    const filtered = q
+      ? allUsers.filter(u => u.username?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q))
+      : allUsers;
+    $('lbl-users').textContent = `${filtered.length} utilisateur(s)`;
+    $('tb-users').innerHTML = filtered.length ? filtered.map(u => `
+      <tr>
+        <td><div class="td-user">${avHtml(u)}<div><div class="td-name">${u.username || 'Anonyme'}</div>${u.github ? `<a href="${u.github}" target="_blank" class="td-sub" style="color:var(--accent)">GitHub</a>` : ''}</div></div></td>
+        <td class="td-sub">${u.email || '—'}</td>
+        <td>${(u.stack||[]).slice(0,3).map(s=>`<span class="badge badge-stack" style="font-size:0.62rem">${s}</span>`).join(' ')}</td>
+        <td>${u.role==='admin' ? '<span class="badge badge-admin">👑 Admin</span>' : '<span class="badge" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border)">Membre</span>'}</td>
+        <td class="td-sub">${fdate(u.createdAt)}</td>
+        <td><div class="action-btns">
+          ${u.role==='admin'
+            ? `<button class="btn-sm danger" onclick="demote('${u.id}','${u.username}')">⬇ Rétrograder</button>`
+            : `<button class="btn-sm" onclick="promote('${u.id}','${u.username}')">👑 Admin</button>`}
+          <button class="btn-sm danger" onclick="delUser('${u.id}','${u.username}')">🗑</button>
+        </div></td>
+      </tr>`).join('') : emptyRow(6, 'Aucun utilisateur.');
+  }
+
+  $('search-users').oninput = e => renderUsers(e.target.value.toLowerCase());
+
+  window.promote = (uid, name) => confirm('Promouvoir', `Promouvoir "${name}" en admin ?`, async () => {
+    await updateDoc(doc(db, 'users', uid), { role: 'admin' });
+    const u = allUsers.find(u => u.id === uid); if (u) u.role = 'admin';
+    renderUsers($('search-users').value.toLowerCase()); renderOverview();
+    addLog('👑', 'Promotion admin', name); toast(`${name} est admin ✅`, 'success');
+  });
+
+  window.demote = (uid, name) => {
+    if (uid === currentUser.uid) return toast('Impossible de te rétrograder toi-même.', 'error');
+    confirm('Rétrograder', `Retirer les droits admin de "${name}" ?`, async () => {
+      await updateDoc(doc(db, 'users', uid), { role: 'member' });
+      const u = allUsers.find(u => u.id === uid); if (u) u.role = 'member';
+      renderUsers($('search-users').value.toLowerCase()); renderOverview();
+      addLog('⬇', 'Rétrogradation', name); toast(`${name} n'est plus admin.`, 'success');
+    });
+  };
+
+  window.delUser = (uid, name) => {
+    if (uid === currentUser.uid) return toast('Impossible de supprimer ton propre compte.', 'error');
+    confirm('Supprimer le compte', `Supprimer définitivement le compte de "${name}" ?`, async () => {
+      await deleteDoc(doc(db, 'users', uid));
+      allUsers = allUsers.filter(u => u.id !== uid);
+      renderUsers($('search-users').value.toLowerCase()); renderOverview();
+      addLog('🗑', 'Compte supprimé', name); toast(`${name} supprimé.`, 'success');
+    });
+  };
+
+  // ── PROJECTS ───────────────────────────────────────────────────────────────
+  function loadProjects() {
+    onSnapshot(collection(db, 'projects'),
+      snap => {
+        allProjects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        allProjects.sort((a, b) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
+        renderOverview(); renderProjects();
+      },
+      err => { toast('Erreur projets : ' + err.message, 'error'); console.error(err); }
+    );
+  }
+
+  function renderProjects(q = '') {
+    q = q || $('search-projects').value.toLowerCase();
+    const filtered = allProjects.filter(p => {
+      const ms = projFilter === 'all' || p.status === projFilter;
+      const mq = !q || p.title?.toLowerCase().includes(q) || p.authorName?.toLowerCase().includes(q);
+      return ms && mq;
+    });
+    $('lbl-projects').textContent = `${filtered.length} projet(s)`;
+    $('tb-projects').innerHTML = filtered.length ? filtered.map(p => `
+      <tr>
+        <td><div class="td-name">${p.title||'Sans titre'}</div><div class="td-sub">${(p.description||'').slice(0,55)}${(p.description||'').length>55?'…':''}</div></td>
+        <td class="td-sub">${p.authorName||'—'}</td>
+        <td>${(p.stack||[]).slice(0,2).map(s=>`<span class="badge badge-stack" style="font-size:0.62rem">${s}</span>`).join(' ')}</td>
+        <td>${sbadge(p.status)}</td>
+        <td style="text-align:center">${(p.applicants||[]).length}</td>
+        <td class="td-sub">${fdate(p.createdAt)}</td>
+        <td><div class="action-btns">
+          <select class="role-select" onchange="chStatus('${p.id}',this.value,'${(p.title||'').replace(/'/g,"\\'")}')">
+            <option value="open" ${p.status==='open'?'selected':''}>🟢 Ouvert</option>
+            <option value="inprogress" ${p.status==='inprogress'?'selected':''}>🟡 En cours</option>
+            <option value="done" ${p.status==='done'?'selected':''}>⚫ Terminé</option>
+          </select>
+          <button class="btn-sm danger" onclick="delProject('${p.id}','${(p.title||'').replace(/'/g,"\\'")}')">🗑</button>
+        </div></td>
+      </tr>`).join('') : emptyRow(7, 'Aucun projet.');
+  }
+
+  $('search-projects').oninput = () => renderProjects();
+  document.querySelectorAll('#proj-filters .filter-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('#proj-filters .filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active'); projFilter = btn.dataset.s; renderProjects();
+    };
+  });
+
+  window.chStatus = async (id, status, title) => {
+    await updateDoc(doc(db, 'projects', id), { status });
+    addLog('✏️', 'Statut modifié', `"${title}" → ${status}`); toast('Statut mis à jour.', 'success');
+  };
+
+  window.delProject = (id, title) => confirm('Supprimer', `Supprimer "${title}" ?`, async () => {
+    await deleteDoc(doc(db, 'projects', id));
+    addLog('🗑', 'Projet supprimé', `"${title}"`); toast('Projet supprimé.', 'success');
+  });
+
+  // ── CONVERSATIONS ──────────────────────────────────────────────────────────
+  function loadConvos() {
+    // getDocs simple sans filtre pour éviter tout problème de règle
+    getDocs(collection(db, 'conversations')).then(snap => {
+      allConvos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      allConvos.sort((a, b) => (b.lastMessageAt?.toMillis?.() || 0) - (a.lastMessageAt?.toMillis?.() || 0));
+      renderOverview(); renderConvos();
+    }).catch(err => {
+      console.error('loadConvos:', err);
+      $('tb-convos').innerHTML = `<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--accent2)">
+        ⚠️ ${err.message}<br><small style="color:var(--muted)">Vérifie les règles Firestore — conversations : allow read: if request.auth != null;</small>
+      </td></tr>`;
+      $('lbl-convos').textContent = 'Erreur';
+    });
+  }
+
+  function renderConvos() {
+    $('lbl-convos').textContent = `${allConvos.length} conversation(s)`;
+    $('tb-convos').innerHTML = allConvos.length ? allConvos.map(c => {
+      const members = (c.members||[]).map(uid => {
+        const u = allUsers.find(u => u.id === uid);
+        return u?.username || uid.slice(0,8)+'…';
+      }).join(' ↔ ');
+      return `<tr>
+        <td style="font-weight:500">${members}</td>
+        <td class="td-sub" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.lastMessage||'—'}</td>
+        <td class="td-sub">${fdatetime(c.lastMessageAt)}</td>
+        <td><button class="btn-sm danger" onclick="delConvo('${c.id}')">🗑 Suppr.</button></td>
+      </tr>`;
+    }).join('') : emptyRow(4, 'Aucune conversation.');
+  }
+
+  window.delConvo = id => confirm('Supprimer la conversation', 'Supprimer cette conversation ?', async () => {
+    await deleteDoc(doc(db, 'conversations', id));
+    allConvos = allConvos.filter(c => c.id !== id);
+    renderConvos(); renderOverview();
+    addLog('🗑', 'Conversation supprimée', id); toast('Conversation supprimée.', 'success');
+  });
+
+  // ── OVERVIEW ───────────────────────────────────────────────────────────────
+  function renderOverview() {
+    $('s-users').textContent = allUsers.length;
+    $('s-admins').textContent = allUsers.filter(u => u.role === 'admin').length;
+    $('s-total').textContent = allProjects.length;
+    $('s-open').textContent = allProjects.filter(p => p.status === 'open').length;
+    $('s-convos').textContent = allConvos.length;
+    $('s-apps').textContent = allProjects.reduce((s, p) => s + (p.applicants?.length||0), 0);
+
+    renderBarChart('chart-status', [
+      { label: 'Ouverts', val: allProjects.filter(p=>p.status==='open').length, color: 'var(--green)' },
+      { label: 'En cours', val: allProjects.filter(p=>p.status==='inprogress').length, color: '#ffc850' },
+      { label: 'Terminés', val: allProjects.filter(p=>p.status==='done').length, color: 'var(--muted)' },
+    ]);
+
+    const sc = {};
+    allProjects.forEach(p => (p.stack||[]).forEach(s => { sc[s] = (sc[s]||0)+1; }));
+    renderBarChart('chart-stacks',
+      Object.entries(sc).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([l,v])=>({ label:l, val:v, color:'var(--accent)' }))
+    );
+
+    $('tb-recent').innerHTML = allUsers.slice(0,5).map(u => `
+      <tr>
+        <td><div class="td-user">${avHtml(u)}<div class="td-name">${u.username||'Anonyme'}</div></div></td>
+        <td class="td-sub">${u.email||'—'}</td>
+        <td>${(u.stack||[]).slice(0,3).map(s=>`<span class="badge badge-stack" style="font-size:0.62rem">${s}</span>`).join(' ')}</td>
+        <td class="td-sub">${fdate(u.createdAt)}</td>
+      </tr>`).join('');
+  }
+
+  function renderBarChart(id, data) {
+    const el = $(id);
+    if (!data.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">Aucune donnée.</div>'; return; }
+    const max = Math.max(...data.map(d=>d.val), 1);
+    el.innerHTML = data.map(d => `
+      <div class="bar-col">
+        <div class="bar-val">${d.val}</div>
+        <div class="bar" style="height:${Math.max(Math.round(d.val/max*90),4)}px;background:${d.color}"></div>
+        <div class="bar-label">${d.label}</div>
+      </div>`).join('');
+  }
+
+  // ── BANNER ─────────────────────────────────────────────────────────────────
+  async function loadBanner() {
+    try {
+      const snap = await getDoc(doc(db, 'settings', 'global'));
+      const banner = snap.exists() ? (snap.data().banner || '') : '';
+      $('banner-input').value = banner;
+      updateBannerPreview(banner);
+      showSiteBanner(banner);
+      $('banner-status').textContent = banner ? '✅ Bannière active' : 'Aucune bannière active.';
+    } catch(e) {
+      $('banner-status').textContent = '⚠️ Impossible de charger : ' + e.message;
+    }
+  }
+
+  function updateBannerPreview(text) {
+    const prev = $('banner-preview');
+    if (text) { prev.style.display = 'block'; prev.textContent = text; }
+    else { prev.style.display = 'none'; }
+  }
+
+  function showSiteBanner(text) {
+    const b = $('site-banner');
+    if (text) { b.textContent = text; b.style.display = 'block'; }
+    else { b.style.display = 'none'; }
+  }
+
+  $('banner-input').oninput = e => updateBannerPreview(e.target.value.trim());
+
+  $('btn-save-banner').onclick = async () => {
+    const text = $('banner-input').value.trim();
+    try {
+      await setDoc(doc(db, 'settings', 'global'), { banner: text }, { merge: true });
+      showSiteBanner(text);
+      $('banner-status').textContent = text ? '✅ Bannière active' : 'Bannière désactivée.';
+      addLog('📢', 'Bannière mise à jour', text || '(désactivée)');
+      toast(text ? 'Bannière activée ✅' : 'Bannière désactivée.', 'success');
+    } catch(e) {
+      toast('Erreur : ' + e.message, 'error');
+      $('banner-status').textContent = '⚠️ Erreur : ' + e.message;
+    }
+  };
+
+  $('btn-clear-banner').onclick = async () => {
+    $('banner-input').value = '';
+    updateBannerPreview('');
+    try {
+      await setDoc(doc(db, 'settings', 'global'), { banner: '' }, { merge: true });
+      showSiteBanner('');
+      $('banner-status').textContent = 'Bannière désactivée.';
+      addLog('📢', 'Bannière désactivée');
+      toast('Bannière désactivée.', 'success');
+    } catch(e) {
+      toast('Erreur : ' + e.message, 'error');
+    }
+  };
+
+  // ── ADD ADMIN ──────────────────────────────────────────────────────────────
+  $('btn-add-admin').onclick = async () => {
+    const email = $('admin-email-input').value.trim().toLowerCase();
+    if (!email) return toast('Saisis un email.', 'error');
+    const u = allUsers.find(u => u.email?.toLowerCase() === email);
+    if (!u) return toast('Utilisateur introuvable. Il doit avoir un compte StackMates.', 'error');
+    if (u.role === 'admin') return toast('Déjà admin.', 'error');
+    await updateDoc(doc(db, 'users', u.id), { role: 'admin' });
+    u.role = 'admin'; renderUsers(); renderOverview();
+    addLog('👑', 'Nouveau admin', email);
+    toast(`${email} est maintenant admin ✅`, 'success');
+    $('admin-email-input').value = '';
+  };
+
+  // ── PURGE DONE ─────────────────────────────────────────────────────────────
+  $('btn-purge-done').onclick = () => {
+    const done = allProjects.filter(p => p.status === 'done');
+    if (!done.length) return toast('Aucun projet terminé.', 'error');
+    confirm('Supprimer les projets terminés', `Supprimer les ${done.length} projet(s) terminé(s) ?`, async () => {
+      const batch = writeBatch(db);
+      done.forEach(p => batch.delete(doc(db, 'projects', p.id)));
+      await batch.commit();
+      addLog('🗑', 'Purge', `${done.length} projets terminés supprimés`);
+      toast(`${done.length} projet(s) supprimé(s).`, 'success');
+    });
+  };
+</script>
+</body>
+</html>

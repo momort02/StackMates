@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,18 +22,14 @@
       position: absolute;
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, rgba(108, 99, 255, 0.12) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(108,99,255,0.12) 0%, transparent 70%);
       top: 50%;
       left: 50%;
       transform: translate(-50%, -60%);
       pointer-events: none;
     }
 
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      max-width: 680px;
-    }
+    .hero-content { position: relative; z-index: 1; max-width: 680px; }
 
     .hero-badge {
       display: inline-flex;
@@ -49,10 +44,7 @@
       background: var(--surface);
     }
 
-    .hero-badge span {
-      color: var(--green);
-      font-weight: 600;
-    }
+    .hero-badge span { color: var(--green); font-weight: 600; }
 
     .hero h1 {
       font-family: 'Syne', sans-serif;
@@ -126,10 +118,7 @@
       margin-bottom: 0.4rem;
     }
 
-    .feature-card p {
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
+    .feature-card p { color: var(--muted); font-size: 0.9rem; }
 
     /* STATS */
     .stats {
@@ -143,21 +132,14 @@
       flex-wrap: wrap;
     }
 
-    .stat {
-      text-align: center;
-    }
-
+    .stat { text-align: center; }
     .stat-num {
       font-family: 'Syne', sans-serif;
       font-size: 2rem;
       font-weight: 800;
       color: var(--accent);
     }
-
-    .stat-label {
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
+    .stat-label { color: var(--muted); font-size: 0.85rem; }
 
     /* CTA */
     .cta-section {
@@ -172,130 +154,152 @@
       margin-bottom: 1rem;
     }
 
-    .cta-section p {
-      color: var(--muted);
-      margin-bottom: 2rem;
-    }
+    .cta-section p { color: var(--muted); margin-bottom: 2rem; }
   </style>
+
+<style>
+#site-banner{display:none;background:var(--accent);color:#fff;text-align:center;padding:0.55rem 1rem;font-size:0.88rem;font-weight:500;position:sticky;top:64px;z-index:99}
+</style>
 </head>
-
 <body>
+<div id="site-banner"></div>
 
-  <nav>
-    <a href="index.html" class="nav-logo">Stack<span>Mates</span></a>
-    <ul class="nav-links">
-      <li><a href="projects.html">Projets</a></li>
-      <li><a href="auth.html" class="btn-nav">Rejoindre</a></li>
-    </ul>
-  </nav>
+<nav>
+  <a href="index.html" class="nav-logo">Stack<span>Mates</span></a>
+  <ul class="nav-links">
+    <li><a href="projects.html">Projets</a></li>
+    <li><a href="auth.html" class="btn-nav">Rejoindre</a></li>
+  </ul>
+</nav>
 
-  <section class="hero">
-    <div class="hero-content">
-      <div class="hero-badge">
-        🚀 <span>Bêta ouverte</span> — Rejoins la communauté
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      🚀 <span>Bêta ouverte</span> — Rejoins la communauté
+    </div>
+    <h1>Trouve ton équipe pour <em>coder ensemble</em></h1>
+    <p>
+      Tu as une idée de projet mais tu manques de compétences ?
+      StackMates connecte les devs, designers et makers pour construire des trucs cool.
+    </p>
+    <div class="hero-actions">
+      <a href="auth.html" class="btn btn-primary" style="font-size:1rem;padding:0.8rem 1.8rem;">
+        ⚡ Commencer gratuitement
+      </a>
+      <a href="projects.html" class="btn btn-ghost" style="font-size:1rem;padding:0.8rem 1.8rem;">
+        Voir les projets
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num" id="stat-projects">—</div>
+      <div class="stat-label">Projets actifs</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="stat-users">—</div>
+      <div class="stat-label">Membres</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="stat-matches">—</div>
+      <div class="stat-label">Équipes formées</div>
+    </div>
+  </div>
+
+  <section class="features">
+    <h2 class="features-title">Comment ça marche ?</h2>
+    <p class="features-sub">En 3 étapes simples.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📋</div>
+        <h3>Poste ton projet</h3>
+        <p>Décris ton idée, ta stack technique et les profils que tu recherches.</p>
       </div>
-      <h1>Trouve ton équipe pour <em>coder ensemble</em></h1>
-      <p>
-        Tu as une idée de projet mais tu manques de compétences ?
-        StackMates connecte les devs, designers et makers pour construire des trucs cool.
-      </p>
-      <div class="hero-actions">
-        <a href="auth.html" class="btn btn-primary" style="font-size:1rem;padding:0.8rem 1.8rem;">
-          ⚡ Commencer gratuitement
-        </a>
-        <a href="projects.html" class="btn btn-ghost" style="font-size:1rem;padding:0.8rem 1.8rem;">
-          Voir les projets
-        </a>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Trouve des mates</h3>
+        <p>Filtre par stack, type de projet, statut. Postule en un clic.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛠️</div>
+        <h3>Build ensemble</h3>
+        <p>Le créateur accepte ton profil, vous prenez contact et c'est parti.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <h3>Showcase ton travail</h3>
+        <p>Une fois terminé, le projet est mis en avant sur la plateforme.</p>
       </div>
     </div>
   </section>
 
-  <div class="container">
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-num" id="stat-projects">—</div>
-        <div class="stat-label">Projets actifs</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="stat-users">—</div>
-        <div class="stat-label">Membres</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="stat-matches">—</div>
-        <div class="stat-label">Équipes formées</div>
-      </div>
-    </div>
+  <section class="cta-section">
+    <h2>Prêt à build quelque chose ?</h2>
+    <p>Rejoins des centaines de devs qui cherchent leurs StackMates.</p>
+    <a href="auth.html" class="btn btn-primary" style="font-size:1rem;padding:0.8rem 2rem;">
+      Créer mon profil →
+    </a>
+  </section>
+</div>
 
-    <section class="features">
-      <h2 class="features-title">Comment ça marche ?</h2>
-      <p class="features-sub">En 3 étapes simples.</p>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">📋</div>
-          <h3>Poste ton projet</h3>
-          <p>Décris ton idée, ta stack technique et les profils que tu recherches.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔍</div>
-          <h3>Trouve des mates</h3>
-          <p>Filtre par stack, type de projet, statut. Postule en un clic.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🛠️</div>
-          <h3>Build ensemble</h3>
-          <p>Le créateur accepte ton profil, vous prenez contact et c'est parti.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🏆</div>
-          <h3>Showcase ton travail</h3>
-          <p>Une fois terminé, le projet est mis en avant sur la plateforme.</p>
-        </div>
-      </div>
-    </section>
+<div id="toast"></div>
 
-    <section class="cta-section">
-      <h2>Prêt à build quelque chose ?</h2>
-      <p>Rejoins des centaines de devs qui cherchent leurs StackMates.</p>
-      <a href="auth.html" class="btn btn-primary" style="font-size:1rem;padding:0.8rem 2rem;">
-        Créer mon profil →
-      </a>
-    </section>
-  </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  <div id="toast"></div>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBWqF4_uiur-XOD8lQy2X9cJciWo9vkUZg",
+    authDomain: "stackmates-a674e.firebaseapp.com",
+    projectId: "stackmates-a674e",
+    storageBucket: "stackmates-a674e.firebasestorage.app",
+    messagingSenderId: "485803590862",
+    appId: "1:485803590862:web:875a4dda0c2c31605dbc9f"
+  };
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBWqF4_uiur-XOD8lQy2X9cJciWo9vkUZg",
-      authDomain: "stackmates-a674e.firebaseapp.com",
-      projectId: "stackmates-a674e",
-      storageBucket: "stackmates-a674e.firebasestorage.app",
-      messagingSenderId: "485803590862",
-      appId: "1:485803590862:web:875a4dda0c2c31605dbc9f"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    async function loadStats() {
-      try {
-        const projectsSnap = await getCountFromServer(collection(db, 'projects'));
-        const usersSnap = await getCountFromServer(collection(db, 'users'));
-        document.getElementById('stat-projects').textContent = projectsSnap.data().count;
-        document.getElementById('stat-users').textContent = usersSnap.data().count;
-        document.getElementById('stat-matches').textContent = Math.floor(projectsSnap.data().count * 0.6);
-      } catch (e) {
-        document.getElementById('stat-projects').textContent = '0';
-        document.getElementById('stat-users').textContent = '0';
-        document.getElementById('stat-matches').textContent = '0';
-      }
+  async function loadStats() {
+    try {
+      const projectsSnap = await getCountFromServer(collection(db, 'projects'));
+      const usersSnap = await getCountFromServer(collection(db, 'users'));
+      document.getElementById('stat-projects').textContent = projectsSnap.data().count;
+      document.getElementById('stat-users').textContent = usersSnap.data().count;
+      document.getElementById('stat-matches').textContent = Math.floor(projectsSnap.data().count * 0.6);
+    } catch(e) {
+      document.getElementById('stat-projects').textContent = '0';
+      document.getElementById('stat-users').textContent = '0';
+      document.getElementById('stat-matches').textContent = '0';
     }
-    loadStats();
-  </script>
+  }
+  loadStats();
+</script>
 
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  const app = initializeApp({
+    apiKey:"AIzaSyBWqF4_uiur-XOD8lQy2X9cJciWo9vkUZg",
+    authDomain:"stackmates-a674e.firebaseapp.com",
+    projectId:"stackmates-a674e",
+    storageBucket:"stackmates-a674e.firebasestorage.app",
+    messagingSenderId:"485803590862",
+    appId:"1:485803590862:web:875a4dda0c2c31605dbc9f"
+  });
+  const db = getFirestore(app);
+  getDoc(doc(db,'settings','global')).then(snap=>{
+    const text = snap.exists() ? snap.data().banner || '' : '';
+    if(text){
+      const b = document.getElementById('site-banner');
+      b.textContent = text;
+      b.style.display = 'block';
+    }
+  }).catch(()=>{});
+</script>
 </body>
-
 </html>

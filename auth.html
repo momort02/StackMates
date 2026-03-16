@@ -1,292 +1,354 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>StackMates — Connexion</title>
-    <link rel="stylesheet" href="style.css" />
-    <style>
-        .auth-page {
-            min-height: calc(100vh - 64px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StackMates — Connexion</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .auth-page {
+      min-height: calc(100vh - 64px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 2rem;
+    }
+    .auth-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2.5rem;
+      width: 100%; max-width: 420px;
+    }
+    .auth-box h2 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 0.3rem; }
+    .auth-box .subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+    .auth-tabs {
+      display: flex; margin-bottom: 1.8rem;
+      background: var(--surface2); border-radius: var(--radius-sm); padding: 3px;
+    }
+    .auth-tab {
+      flex: 1; padding: 0.5rem; text-align: center;
+      border-radius: calc(var(--radius-sm) - 2px);
+      font-size: 0.9rem; font-weight: 500; cursor: pointer;
+      transition: all 0.2s; color: var(--muted);
+      border: none; background: transparent; font-family: 'DM Sans', sans-serif;
+    }
+    .auth-tab.active { background: var(--accent); color: #fff; }
+    .divider {
+      display: flex; align-items: center; gap: 1rem;
+      margin: 1.2rem 0; color: var(--muted); font-size: 0.8rem;
+    }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .btn-google {
+      width: 100%; display: flex; align-items: center; justify-content: center;
+      gap: 0.6rem; padding: 0.7rem; background: var(--surface2);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+      cursor: pointer; transition: border-color 0.2s; margin-bottom: 0.5rem;
+    }
+    .btn-google:hover { border-color: var(--accent); }
+    .btn-google img { width: 18px; height: 18px; }
+    .btn-submit {
+      width: 100%; padding: 0.75rem; background: var(--accent); color: #fff;
+      border: none; border-radius: var(--radius-sm); font-size: 0.95rem;
+      font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover { background: #5a52e0; }
+    .btn-submit:disabled { background: var(--border); cursor: not-allowed; }
+    #register-form { display: none; }
 
-        .auth-box {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 2.5rem;
-            width: 100%;
-            max-width: 420px;
-        }
+    /* PHOTO PICKER */
+    .photo-picker {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0.6rem; margin-bottom: 1.2rem;
+    }
+    .photo-picker-zone {
+      width: 88px; height: 88px; border-radius: 50%;
+      border: 2px dashed var(--border); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; transition: border-color 0.2s; position: relative;
+      background: var(--surface2);
+    }
+    .photo-picker-zone:hover { border-color: var(--accent); }
+    .photo-picker-zone.has-photo { border-style: solid; border-color: var(--accent); }
+    .photo-picker-zone img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .photo-picker-zone .placeholder {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0.2rem; color: var(--muted);
+    }
+    .photo-picker-zone .placeholder span { font-size: 1.6rem; }
+    .photo-picker-zone .placeholder small { font-size: 0.62rem; text-align: center; }
+    .photo-required-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-size: 0.72rem; color: var(--accent2); font-weight: 600;
+    }
+    .photo-ok-badge {
+      display: none; align-items: center; gap: 0.3rem;
+      font-size: 0.72rem; color: var(--green); font-weight: 600;
+    }
+    #photo-input-reg { display: none; }
 
-        .auth-box h2 {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.6rem;
-            font-weight: 800;
-            margin-bottom: 0.3rem;
-        }
-
-        .auth-box .subtitle {
-            color: var(--muted);
-            font-size: 0.9rem;
-            margin-bottom: 2rem;
-        }
-
-        .auth-tabs {
-            display: flex;
-            gap: 0;
-            margin-bottom: 1.8rem;
-            background: var(--surface2);
-            border-radius: var(--radius-sm);
-            padding: 3px;
-        }
-
-        .auth-tab {
-            flex: 1;
-            padding: 0.5rem;
-            text-align: center;
-            border-radius: calc(var(--radius-sm) - 2px);
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--muted);
-            border: none;
-            background: transparent;
-            font-family: 'DM Sans', sans-serif;
-        }
-
-        .auth-tab.active {
-            background: var(--accent);
-            color: #fff;
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin: 1.2rem 0;
-            color: var(--muted);
-            font-size: 0.8rem;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        .btn-google {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.6rem;
-            padding: 0.7rem;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            color: var(--text);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: border-color 0.2s;
-            margin-bottom: 0.5rem;
-        }
-
-        .btn-google:hover {
-            border-color: var(--accent);
-        }
-
-        .btn-google img {
-            width: 18px;
-            height: 18px;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 0.75rem;
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            border-radius: var(--radius-sm);
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'DM Sans', sans-serif;
-            transition: background 0.2s;
-        }
-
-        .btn-submit:hover {
-            background: #5a52e0;
-        }
-
-        #register-form {
-            display: none;
-        }
-    </style>
+    #site-banner { display: none; background: var(--accent); color: #fff; text-align: center; padding: 0.55rem 1rem; font-size: 0.88rem; font-weight: 500; position: sticky; top: 64px; z-index: 99; }
+  </style>
 </head>
-
 <body>
+<div id="site-banner"></div>
 
-    <nav>
-        <a href="index.html" class="nav-logo">Stack<span>Mates</span></a>
-        <ul class="nav-links">
-            <li><a href="projects.html">Projets</a></li>
-        </ul>
-    </nav>
+<nav>
+  <a href="index.html" class="nav-logo">Stack<span>Mates</span></a>
+  <ul class="nav-links">
+    <li><a href="projects.html">Projets</a></li>
+  </ul>
+</nav>
 
-    <div class="auth-page">
-        <div class="auth-box">
-            <h2>Bienvenue 👋</h2>
-            <p class="subtitle">Connecte-toi pour accéder à StackMates.</p>
+<div class="auth-page">
+  <div class="auth-box">
+    <h2>Bienvenue 👋</h2>
+    <p class="subtitle">Connecte-toi pour accéder à StackMates.</p>
 
-            <div class="auth-tabs">
-                <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Connexion</button>
-                <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Inscription</button>
-            </div>
-
-            <button class="btn-google" id="btn-google">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
-                Continuer avec Google
-            </button>
-
-            <div class="divider">ou</div>
-
-            <!-- LOGIN FORM -->
-            <div id="login-form">
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="login-email" placeholder="toi@example.com" />
-                </div>
-                <div class="form-group">
-                    <label>Mot de passe</label>
-                    <input type="password" id="login-password" placeholder="••••••••" />
-                </div>
-                <button class="btn-submit" id="btn-login">Se connecter</button>
-            </div>
-
-            <!-- REGISTER FORM -->
-            <div id="register-form">
-                <div class="form-group">
-                    <label>Pseudo</label>
-                    <input type="text" id="reg-username" placeholder="ton_pseudo" />
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="reg-email" placeholder="toi@example.com" />
-                </div>
-                <div class="form-group">
-                    <label>Mot de passe</label>
-                    <input type="password" id="reg-password" placeholder="••••••••" />
-                </div>
-                <button class="btn-submit" id="btn-register">Créer mon compte</button>
-            </div>
-        </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Connexion</button>
+      <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Inscription</button>
     </div>
 
-    <div id="toast"></div>
+    <button class="btn-google" id="btn-google">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
+      Continuer avec Google
+    </button>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import {
-            getAuth, signInWithEmailAndPassword,
-            createUserWithEmailAndPassword, GoogleAuthProvider,
-            signInWithPopup, updateProfile, onAuthStateChanged
-        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    <div class="divider">ou</div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBWqF4_uiur-XOD8lQy2X9cJciWo9vkUZg",
-            authDomain: "stackmates-a674e.firebaseapp.com",
-            projectId: "stackmates-a674e",
-            storageBucket: "stackmates-a674e.firebasestorage.app",
-            messagingSenderId: "485803590862",
-            appId: "1:485803590862:web:875a4dda0c2c31605dbc9f"
+    <!-- LOGIN -->
+    <div id="login-form">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="toi@example.com" />
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" id="login-password" placeholder="••••••••" />
+      </div>
+      <button class="btn-submit" id="btn-login">Se connecter</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="register-form">
+
+      <!-- PHOTO OBLIGATOIRE -->
+      <div class="photo-picker">
+        <div class="photo-picker-zone" id="photo-zone" onclick="document.getElementById('photo-input-reg').click()">
+          <img id="photo-preview" src="" alt="" />
+          <div class="placeholder" id="photo-placeholder">
+            <span>📷</span>
+            <small>Ajouter une<br>photo</small>
+          </div>
+        </div>
+        <input type="file" id="photo-input-reg" accept="image/*" />
+        <div>
+          <span class="photo-required-badge" id="photo-required">⚠️ Photo obligatoire</span>
+          <span class="photo-ok-badge" id="photo-ok">✅ Photo ajoutée</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Pseudo</label>
+        <input type="text" id="reg-username" placeholder="ton_pseudo" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="reg-email" placeholder="toi@example.com" />
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" id="reg-password" placeholder="•••••••• (6 caractères min)" />
+      </div>
+      <button class="btn-submit" id="btn-register">Créer mon compte</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth, signInWithEmailAndPassword,
+    createUserWithEmailAndPassword, GoogleAuthProvider,
+    signInWithPopup, updateProfile, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore, doc, setDoc, getDoc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBWqF4_uiur-XOD8lQy2X9cJciWo9vkUZg",
+    authDomain: "stackmates-a674e.firebaseapp.com",
+    projectId: "stackmates-a674e",
+    storageBucket: "stackmates-a674e.firebasestorage.app",
+    messagingSenderId: "485803590862",
+    appId: "1:485803590862:web:875a4dda0c2c31605dbc9f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let photoBase64 = null;
+  let signingIn = false;
+
+  onAuthStateChanged(auth, user => {
+    if (user && !signingIn) window.location.href = 'projects.html';
+  });
+
+  function toast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = 'show ' + type;
+    setTimeout(() => t.className = '', 3000);
+  }
+
+  // ── PHOTO PICKER ───────────────────────────────────────────────────────────
+  document.getElementById('photo-input-reg').onchange = async e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) return toast('Image trop lourde (max 8MB)', 'error');
+
+    try {
+      photoBase64 = await compressImage(file, 200, 0.78);
+      // Show preview
+      const preview = document.getElementById('photo-preview');
+      const placeholder = document.getElementById('photo-placeholder');
+      const zone = document.getElementById('photo-zone');
+      preview.src = photoBase64;
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
+      zone.classList.add('has-photo');
+      document.getElementById('photo-required').style.display = 'none';
+      document.getElementById('photo-ok').style.display = 'inline-flex';
+    } catch(err) {
+      toast('Erreur lecture image : ' + err.message, 'error');
+    }
+    e.target.value = '';
+  };
+
+  function compressImage(file, maxSize, quality) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let w = img.width, h = img.height;
+          if (w > h && w > maxSize) { h = Math.round(h * maxSize / w); w = maxSize; }
+          else if (h > maxSize) { w = Math.round(w * maxSize / h); h = maxSize; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
         };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+  // ── CREATE USER DOC ────────────────────────────────────────────────────────
+  async function createUserDoc(user, username, photo) {
+    const ref = doc(db, 'users', user.uid);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) {
+      await setDoc(ref, {
+        uid: user.uid,
+        username: username || user.displayName || user.email.split('@')[0],
+        email: user.email,
+        bio: '',
+        stack: [],
+        github: '',
+        photoBase64: photo || '',
+        createdAt: serverTimestamp()
+      });
+    }
+  }
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) window.location.href = 'projects.html';
-        });
+  // ── GOOGLE (photo non obligatoire car fournie par Google) ──────────────────
+  document.getElementById('btn-google').onclick = async () => {
+    signingIn = true;
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      await createUserDoc(result.user, null, '');
+      signingIn = false;
+      window.location.href = 'projects.html';
+    } catch(e) {
+      signingIn = false;
+      if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
+        toast('Erreur Google : ' + e.message, 'error');
+      }
+    }
+  };
 
-        function showToast(msg, type = '') {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.className = 'show ' + type;
-            setTimeout(() => t.className = '', 3000);
-        }
+  // ── LOGIN ──────────────────────────────────────────────────────────────────
+  document.getElementById('btn-login').onclick = async () => {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    if (!email || !password) return toast('Remplis tous les champs.', 'error');
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      window.location.href = 'projects.html';
+    } catch(e) { toast('Email ou mot de passe incorrect.', 'error'); }
+  };
 
-        async function createUserDoc(user, username) {
-            const ref = doc(db, 'users', user.uid);
-            const snap = await getDoc(ref);
-            if (!snap.exists()) {
-                await setDoc(ref, {
-                    uid: user.uid,
-                    username: username || user.displayName || user.email.split('@')[0],
-                    email: user.email,
-                    bio: '',
-                    stack: [],
-                    github: '',
-                    createdAt: serverTimestamp()
-                });
-            }
-        }
+  // ── REGISTER ───────────────────────────────────────────────────────────────
+  document.getElementById('btn-register').onclick = async () => {
+    const username = document.getElementById('reg-username').value.trim();
+    const email    = document.getElementById('reg-email').value.trim();
+    const password = document.getElementById('reg-password').value;
 
-        // Google
-        document.getElementById('btn-google').onclick = async () => {
-            try {
-                const provider = new GoogleAuthProvider();
-                const result = await signInWithPopup(auth, provider);
-                await createUserDoc(result.user, null);
-                window.location.href = 'projects.html';
-            } catch (e) { showToast('Erreur Google : ' + e.message, 'error'); }
-        };
+    // Validations
+    if (!photoBase64) {
+      // Shake the photo zone to draw attention
+      const zone = document.getElementById('photo-zone');
+      zone.style.borderColor = 'var(--accent2)';
+      zone.style.animation = 'none';
+      setTimeout(() => zone.style.borderColor = '', 1500);
+      return toast('📷 Une photo de profil est obligatoire.', 'error');
+    }
+    if (!username) return toast('Renseigne un pseudo.', 'error');
+    if (!email)    return toast('Renseigne un email.', 'error');
+    if (password.length < 6) return toast('Mot de passe trop court (6 caractères min).', 'error');
 
-        // Login
-        document.getElementById('btn-login').onclick = async () => {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                window.location.href = 'projects.html';
-            } catch (e) { showToast('Email ou mot de passe incorrect.', 'error'); }
-        };
+    const btn = document.getElementById('btn-register');
+    btn.disabled = true; btn.textContent = 'Création du compte...';
 
-        // Register
-        document.getElementById('btn-register').onclick = async () => {
-            const username = document.getElementById('reg-username').value.trim();
-            const email = document.getElementById('reg-email').value.trim();
-            const password = document.getElementById('reg-password').value;
-            if (!username) return showToast('Renseigne un pseudo.', 'error');
-            try {
-                const result = await createUserWithEmailAndPassword(auth, email, password);
-                await updateProfile(result.user, { displayName: username });
-                await createUserDoc(result.user, username);
-                window.location.href = 'profile.html';
-            } catch (e) { showToast('Erreur : ' + e.message, 'error'); }
-        };
-    </script>
+    try {
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(result.user, { displayName: username });
+      await createUserDoc(result.user, username, photoBase64);
+      window.location.href = 'projects.html';
+    } catch(e) {
+      let msg = e.message;
+      if (e.code === 'auth/email-already-in-use') msg = 'Cet email est déjà utilisé.';
+      if (e.code === 'auth/invalid-email') msg = 'Email invalide.';
+      toast('Erreur : ' + msg, 'error');
+      btn.disabled = false; btn.textContent = 'Créer mon compte';
+    }
+  };
 
-    <script>
-        function switchTab(tab) {
-            document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
-            document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
-            document.getElementById('tab-login').classList.toggle('active', tab === 'login');
-            document.getElementById('tab-register').classList.toggle('active', tab === 'register');
-        }
-    </script>
+  // ── BANNER ─────────────────────────────────────────────────────────────────
+  getDoc(doc(db, 'settings', 'global')).then(snap => {
+    const text = snap.exists() ? snap.data().banner || '' : '';
+    if (text) {
+      const b = document.getElementById('site-banner');
+      b.textContent = text; b.style.display = 'block';
+    }
+  }).catch(() => {});
+</script>
+
+<script>
+  function switchTab(tab) {
+    document.getElementById('login-form').style.display    = tab === 'login'    ? 'block' : 'none';
+    document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+    document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+    document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+  }
+</script>
 
 </body>
-
 </html>
