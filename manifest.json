@@ -30,6 +30,12 @@
       "short_name": "Messages",
       "url": "/messages.html",
       "icons": [{ "src": "logo.svg", "sizes": "any" }]
+    },
+ {
+      "name": "Admin",
+      "short_name": "Admin",
+      "url": "/admin.html",
+      "icons": [{ "src": "logo.svg", "sizes": "any" }]
     }
   ]
 }
