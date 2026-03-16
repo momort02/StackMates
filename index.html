@@ -1,201 +1,301 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StackMates — Trouve ton équipe</title>
+  <title>StackMates — Trouve ton équipe dev</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    .hero {
+      min-height: calc(100vh - 64px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 3rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(108, 99, 255, 0.12) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      background: var(--surface);
+    }
+
+    .hero-badge span {
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 480px;
+      margin: 0 auto 2rem;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* FEATURES */
+    .features {
+      padding: 5rem 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .features-title {
+      text-align: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .features-sub {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+
+    .feature-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .feature-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .feature-card p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* STATS */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 4rem;
+      padding: 3rem 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* CTA */
+    .cta-section {
+      text-align: center;
+      padding: 5rem 0;
+    }
+
+    .cta-section h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+  </style>
 </head>
+
 <body>
-  <nav class="navbar">
-    <a href="index.html" class="logo">Stack<span>Mates</span></a>
-    <div class="nav-links">
-      <a href="index.html" class="active">Projets</a>
-      <a href="post.html">Poster</a>
-      <a href="profile.html">Profil</a>
-    </div>
-    <a href="profile.html" class="btn-nav">Mon compte</a>
+
+  <nav>
+    <a href="index.html" class="nav-logo">Stack<span>Mates</span></a>
+    <ul class="nav-links">
+      <li><a href="projects.html">Projets</a></li>
+      <li><a href="auth.html" class="btn-nav">Rejoindre</a></li>
+    </ul>
   </nav>
 
   <section class="hero">
-    <div class="hero-bg"><div class="grid-lines"></div></div>
     <div class="hero-content">
-      <div class="hero-badge">🔧 Open to collabs</div>
-      <h1>Trouve les devs<br /><span class="accent">qui manquent</span><br />à ton projet.</h1>
-      <p>Poste ton side project, décris ce dont tu as besoin,<br />et connecte-toi avec des développeurs motivés.</p>
-      <div class="hero-ctas">
-        <a href="post.html" class="btn-primary">Poster un projet</a>
-        <a href="#feed" class="btn-ghost">Explorer ↓</a>
+      <div class="hero-badge">
+        🚀 <span>Bêta ouverte</span> — Rejoins la communauté
       </div>
-    </div>
-    <div class="hero-stats">
-      <div class="stat"><span class="stat-num">142</span><span class="stat-label">projets actifs</span></div>
-      <div class="stat-sep"></div>
-      <div class="stat"><span class="stat-num">489</span><span class="stat-label">développeurs</span></div>
-      <div class="stat-sep"></div>
-      <div class="stat"><span class="stat-num">67</span><span class="stat-label">équipes formées</span></div>
-    </div>
-  </section>
-
-  <section class="filters-section" id="feed">
-    <div class="container">
-      <div class="filters">
-        <button class="filter-btn active" data-filter="all">Tous</button>
-        <button class="filter-btn" data-filter="recherche">🔍 En recherche</button>
-        <button class="filter-btn" data-filter="encours">⚡ En cours</button>
-        <button class="filter-btn" data-filter="termine">✅ Terminés</button>
-      </div>
-      <input type="text" class="search-input" placeholder="React, Firebase, Python..." id="searchInput" />
-    </div>
-  </section>
-
-  <section class="feed-section">
-    <div class="container">
-      <div class="feed" id="feed-grid">
-
-        <article class="card" data-status="recherche" data-tags="react firebase">
-          <div class="card-header">
-            <div class="card-avatar">MK</div>
-            <div class="card-meta">
-              <span class="card-author">mathis_k</span>
-              <span class="card-date">Il y a 2h</span>
-            </div>
-            <span class="card-status recherche">En recherche</span>
-          </div>
-          <h2 class="card-title">DevShow — Product Hunt pour étudiants</h2>
-          <p class="card-desc">Un site où les étudiants soumettent leurs projets et la communauté vote. Besoin d'un back-end solide et d'un designer pour l'UI.</p>
-          <div class="card-tags">
-            <span class="tag">React</span><span class="tag">Firebase</span><span class="tag">Tailwind</span>
-          </div>
-          <div class="card-needs">
-            <span class="need">🎨 Designer</span><span class="need">⚙️ Back-end dev</span>
-          </div>
-          <div class="card-footer">
-            <span class="card-applicants">3 candidatures</span>
-            <a href="project.html" class="btn-card">Voir le projet →</a>
-          </div>
-        </article>
-
-        <article class="card" data-status="recherche" data-tags="python django">
-          <div class="card-header">
-            <div class="card-avatar" style="background:var(--accent-green)">SL</div>
-            <div class="card-meta">
-              <span class="card-author">sarah_l</span>
-              <span class="card-date">Il y a 5h</span>
-            </div>
-            <span class="card-status recherche">En recherche</span>
-          </div>
-          <h2 class="card-title">BudgetTrack — Suivi financier étudiant</h2>
-          <p class="card-desc">App web pour gérer son budget mensuel avec des graphiques. Le back est quasi prêt, il faut quelqu'un pour l'UI et les animations.</p>
-          <div class="card-tags">
-            <span class="tag">Python</span><span class="tag">Django</span><span class="tag">Chart.js</span>
-          </div>
-          <div class="card-needs"><span class="need">🎨 Front-end dev</span></div>
-          <div class="card-footer">
-            <span class="card-applicants">1 candidature</span>
-            <a href="project.html" class="btn-card">Voir le projet →</a>
-          </div>
-        </article>
-
-        <article class="card featured" data-status="encours" data-tags="react node mongodb">
-          <div class="card-badge-featured">⭐ Populaire</div>
-          <div class="card-header">
-            <div class="card-avatar" style="background:var(--accent-purple)">TN</div>
-            <div class="card-meta">
-              <span class="card-author">theo_n</span>
-              <span class="card-date">Il y a 1j</span>
-            </div>
-            <span class="card-status encours">En cours</span>
-          </div>
-          <h2 class="card-title">AlgoDaily — Défi algo quotidien</h2>
-          <p class="card-desc">LeetCode mais en français et fait par des étudiants. Éditeur de code intégré, classement hebdo, solution le lendemain. Équipe de 3, on cherche un 4e.</p>
-          <div class="card-tags">
-            <span class="tag">React</span><span class="tag">Node.js</span><span class="tag">MongoDB</span>
-          </div>
-          <div class="card-needs"><span class="need">⚙️ Full-stack dev</span></div>
-          <div class="card-footer">
-            <span class="card-applicants">8 candidatures</span>
-            <a href="project.html" class="btn-card">Voir le projet →</a>
-          </div>
-        </article>
-
-        <article class="card" data-status="recherche" data-tags="flutter dart firebase">
-          <div class="card-header">
-            <div class="card-avatar" style="background:var(--accent-orange)">JB</div>
-            <div class="card-meta">
-              <span class="card-author">jules_b</span>
-              <span class="card-date">Il y a 2j</span>
-            </div>
-            <span class="card-status recherche">En recherche</span>
-          </div>
-          <h2 class="card-title">HabitForge — Tracker d'habitudes social</h2>
-          <p class="card-desc">App mobile Flutter pour créer des défis d'habitudes avec des amis. Streak, notifications, classement. Cherche un dev mobile expérimenté.</p>
-          <div class="card-tags">
-            <span class="tag">Flutter</span><span class="tag">Dart</span><span class="tag">Firebase</span>
-          </div>
-          <div class="card-needs">
-            <span class="need">📱 Dev mobile</span><span class="need">🎨 Designer</span>
-          </div>
-          <div class="card-footer">
-            <span class="card-applicants">5 candidatures</span>
-            <a href="project.html" class="btn-card">Voir le projet →</a>
-          </div>
-        </article>
-
-        <article class="card" data-status="termine" data-tags="html css js">
-          <div class="card-header">
-            <div class="card-avatar" style="background:#555">AM</div>
-            <div class="card-meta">
-              <span class="card-author">anna_m</span>
-              <span class="card-date">Il y a 5j</span>
-            </div>
-            <span class="card-status termine">Terminé</span>
-          </div>
-          <h2 class="card-title">PortfolioGen — Générateur de portfolio</h2>
-          <p class="card-desc">Un générateur de portfolio statique avec templates et export ZIP. Projet fini, open-source dispo sur GitHub.</p>
-          <div class="card-tags">
-            <span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span>
-          </div>
-          <div class="card-needs"></div>
-          <div class="card-footer">
-            <span class="card-applicants">Équipe de 2</span>
-            <a href="project.html" class="btn-card">Voir le projet →</a>
-          </div>
-        </article>
-
-        <article class="card" data-status="recherche" data-tags="vue firebase">
-          <div class="card-header">
-            <div class="card-avatar" style="background:var(--accent)">RD</div>
-            <div class="card-meta">
-              <span class="card-author">romain_d</span>
-              <span class="card-date">Il y a 3j</span>
-            </div>
-            <span class="card-status recherche">En recherche</span>
-          </div>
-          <h2 class="card-title">NoteCollab — Notes partagées en temps réel</h2>
-          <p class="card-desc">Un Google Docs minimaliste pour les révisions en groupe. Markdown support, partage par lien, historique de versions simplifié.</p>
-          <div class="card-tags">
-            <span class="tag">Vue.js</span><span class="tag">Firebase</span>
-          </div>
-          <div class="card-needs"><span class="need">⚙️ Back-end dev</span></div>
-          <div class="card-footer">
-            <span class="card-applicants">2 candidatures</span>
-            <a href="project.html" class="btn-card">Voir le projet →</a>
-          </div>
-        </article>
-
+      <h1>Trouve ton équipe pour <em>coder ensemble</em></h1>
+      <p>
+        Tu as une idée de projet mais tu manques de compétences ?
+        StackMates connecte les devs, designers et makers pour construire des trucs cool.
+      </p>
+      <div class="hero-actions">
+        <a href="auth.html" class="btn btn-primary" style="font-size:1rem;padding:0.8rem 1.8rem;">
+          ⚡ Commencer gratuitement
+        </a>
+        <a href="projects.html" class="btn btn-ghost" style="font-size:1rem;padding:0.8rem 1.8rem;">
+          Voir les projets
+        </a>
       </div>
     </div>
   </section>
 
-  <footer class="footer">
-    <div class="container">
-      <span class="logo">Stack<span>Mates</span></span>
-      <span class="footer-text">Fait par des devs, pour des devs.</span>
+  <div class="container">
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" id="stat-projects">—</div>
+        <div class="stat-label">Projets actifs</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="stat-users">—</div>
+        <div class="stat-label">Membres</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="stat-matches">—</div>
+        <div class="stat-label">Équipes formées</div>
+      </div>
     </div>
-  </footer>
 
-  <script src="app.js"></script>
+    <section class="features">
+      <h2 class="features-title">Comment ça marche ?</h2>
+      <p class="features-sub">En 3 étapes simples.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h3>Poste ton projet</h3>
+          <p>Décris ton idée, ta stack technique et les profils que tu recherches.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h3>Trouve des mates</h3>
+          <p>Filtre par stack, type de projet, statut. Postule en un clic.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛠️</div>
+          <h3>Build ensemble</h3>
+          <p>Le créateur accepte ton profil, vous prenez contact et c'est parti.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🏆</div>
+          <h3>Showcase ton travail</h3>
+          <p>Une fois terminé, le projet est mis en avant sur la plateforme.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <h2>Prêt à build quelque chose ?</h2>
+      <p>Rejoins des centaines de devs qui cherchent leurs StackMates.</p>
+      <a href="auth.html" class="btn btn-primary" style="font-size:1rem;padding:0.8rem 2rem;">
+        Créer mon profil →
+      </a>
+    </section>
+  </div>
+
+  <div id="toast"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWqF4_uiur-XOD8lQy2X9cJciWo9vkUZg",
+      authDomain: "stackmates-a674e.firebaseapp.com",
+      projectId: "stackmates-a674e",
+      storageBucket: "stackmates-a674e.firebasestorage.app",
+      messagingSenderId: "485803590862",
+      appId: "1:485803590862:web:875a4dda0c2c31605dbc9f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadStats() {
+      try {
+        const projectsSnap = await getCountFromServer(collection(db, 'projects'));
+        const usersSnap = await getCountFromServer(collection(db, 'users'));
+        document.getElementById('stat-projects').textContent = projectsSnap.data().count;
+        document.getElementById('stat-users').textContent = usersSnap.data().count;
+        document.getElementById('stat-matches').textContent = Math.floor(projectsSnap.data().count * 0.6);
+      } catch (e) {
+        document.getElementById('stat-projects').textContent = '0';
+        document.getElementById('stat-users').textContent = '0';
+        document.getElementById('stat-matches').textContent = '0';
+      }
+    }
+    loadStats();
+  </script>
+
 </body>
+
 </html>

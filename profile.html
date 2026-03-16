@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StackMates — Mon profil</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .profile-layout { display: grid; grid-template-columns: 300px 1fr; gap: 2rem; padding: 2rem 0 4rem; align-items: start; }
+    .profile-sidebar { position: sticky; top: 84px; }
+    .profile-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.8rem; text-align: center; }
+
+    .photo-upload-zone {
+      position: relative; width: 88px; height: 88px;
+      margin: 0 auto 0.8rem; cursor: pointer;
+    }
+    .photo-upload-zone:hover .photo-overlay { opacity: 1; }
+
+    .profile-photo {
+      width: 88px; height: 88px; border-radius: 50%;
+      object-fit: cover; display: none;
+    }
+    .profile-initials {
+      width: 88px; height: 88px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.8rem; color: #fff;
+    }
+    .photo-overlay {
+      position: absolute; inset: 0; border-radius: 50%;
+      background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.2s; font-size: 1.3rem;
+    }
+    .photo-ring {
+      position: absolute; inset: -2px; border-radius: 50%;
+      border: 2px dashed var(--border); transition: border-color 0.2s; pointer-events: none;
+    }
+    .photo-upload-zone:hover .photo-ring { border-color: var(--accent); }
+    #photo-input { display: none; }
+
+    .photo-actions { display: flex; gap: 0.4rem; justify-content: center; margin-bottom: 1rem; }
+    .photo-upload-progress {
+      display: none; align-items: center; gap: 0.5rem;
+      font-size: 0.78rem; color: var(--muted); justify-content: center; margin-bottom: 0.8rem;
+    }
+    .progress-bar { width: 100px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width 0.3s; }
+
+    .profile-name { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .profile-email { color: var(--muted); font-size: 0.82rem; margin-bottom: 1rem; }
+    .profile-bio { color: var(--muted); font-size: 0.88rem; line-height: 1.6; margin-bottom: 1rem; min-height: 1em; }
+    .stack-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin-bottom: 1rem; }
+
+    .edit-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-top: 1rem; }
+    .edit-section h3 { font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 1rem; font-size: 0.95rem; }
+
+    .section-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+    .my-project-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.3rem; margin-bottom: 1rem; }
+    .my-project-card h4 { font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 0.4rem; }
+
+    .applicant-list { margin-top: 0.8rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .applicant-item { display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem 0.8rem; background: var(--surface2); border-radius: var(--radius-sm); font-size: 0.88rem; }
+    .applicant-item .name { flex: 1; font-weight: 500; }
+    .applicant-photo {
+      width: 28px; height: 28px; border-radius: 50%; overflow: hidden;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.62rem; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .applicant-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .project-actions { display: flex; gap: 0.5rem; margin-top: 0.8rem; flex-wrap: wrap; }
+
+    .quick-msg-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.25rem 0.7rem; border-radius: 999px;
+      background: rgba(108,99,255,0.15); color: var(--accent);
+      border: 1px solid rgba(108,99,255,0.3);
+      font-size: 0.78rem; cursor: pointer; text-decoration: none; transition: background 0.15s;
+    }
+    .quick-msg-btn:hover { background: rgba(108,99,255,0.3); }
+
+    @media (max-width: 768px) {
+      .profile-layout { grid-template-columns: 1fr; }
+      .profile-sidebar { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Stack<span>Mates</span></a>
+  <ul class="nav-links">
+    <li><a href="projects.html">Projets</a></li>
+    <li><a href="messages.html">Messages</a></li>
+    <li><a href="profile.html" class="active">Mon profil</a></li>
+    <li><a href="#" id="btn-logout">Déconnexion</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+  <div class="profile-layout">
+    <aside class="profile-sidebar">
+      <div class="profile-card">
+        <div class="photo-upload-zone" id="photo-zone">
+          <div class="photo-ring"></div>
+          <img class="profile-photo" id="pf-photo" src="" alt="Photo de profil" />
+          <div class="profile-initials" id="pf-initials">?</div>
+          <div class="photo-overlay">📷</div>
+        </div>
+        <input type="file" id="photo-input" accept="image/*" />
+
+        <div class="photo-upload-progress" id="photo-progress">
+          <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+          <span id="progress-label">Compression...</span>
+        </div>
+
+        <div class="photo-actions">
+          <button class="btn btn-ghost" style="font-size:0.78rem;padding:0.3rem 0.7rem" onclick="document.getElementById('photo-input').click()">📷 Changer</button>
+          <button class="btn btn-ghost" style="font-size:0.78rem;padding:0.3rem 0.7rem" id="btn-remove-photo">🗑 Suppr.</button>
+        </div>
+
+        <div class="profile-name" id="pf-name">...</div>
+        <div class="profile-email" id="pf-email">...</div>
+        <div class="profile-bio" id="pf-bio"></div>
+        <div class="stack-tags" id="pf-stack"></div>
+        <div id="pf-github-wrap" style="display:none;margin-bottom:0.8rem">
+          <a id="pf-github" href="#" target="_blank" style="color:var(--accent);font-size:0.85rem"></a>
+        </div>
+      </div>
+
+      <div class="edit-section">
+        <h3>✏️ Modifier le profil</h3>
+        <div class="form-group">
+          <label>Pseudo</label>
+          <input type="text" id="edit-username" placeholder="ton_pseudo" />
+        </div>
+        <div class="form-group">
+          <label>Bio</label>
+          <textarea id="edit-bio" rows="3" placeholder="Parle un peu de toi..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>GitHub</label>
+          <input type="url" id="edit-github" placeholder="https://github.com/toi" />
+        </div>
+        <div class="form-group">
+          <label>Mes technos</label>
+          <div class="tags-input-wrapper" id="edit-stack-wrapper">
+            <input type="text" id="edit-stack-input" placeholder="React, Python... (Entrée)" />
+          </div>
+        </div>
+        <button class="btn btn-primary" id="btn-save-profile" style="width:100%">Sauvegarder</button>
+      </div>
+    </aside>
+
+    <main>
+      <div class="section-title">
+        📁 Mes projets
+        <a href="new-project.html" class="btn btn-primary" style="font-size:0.82rem;padding:0.35rem 0.8rem;margin-left:auto">+ Nouveau</a>
+      </div>
+      <div id="my-projects">
+        <div class="empty-state" style="padding:2rem">
+          <div class="icon">📋</div>
+          <h3>Aucun projet pour l'instant</h3>
+          <p style="margin-bottom:1rem">Crée ton premier projet et trouve des mates !</p>
+          <a href="new-project.html" class="btn btn-primary">+ Nouveau projet</a>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:2.5rem">✋ Mes candidatures</div>
+      <div id="my-applications">
+        <div style="color:var(--muted);font-size:0.9rem;padding:1rem 0">Aucune candidature pour l'instant.</div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, updateDoc,
+    collection, query, where, onSnapshot, deleteDoc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWqF4_uiur-XOD8lQy2X9cJciWo9vkUZg",
+      authDomain: "stackmates-a674e.firebaseapp.com",
+      projectId: "stackmates-a674e",
+      storageBucket: "stackmates-a674e.firebasestorage.app",
+      messagingSenderId: "485803590862",
+      appId: "1:485803590862:web:875a4dda0c2c31605dbc9f"
+    };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  let currentUser = null;
+  let userData = {};
+
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = 'show ' + type;
+    setTimeout(() => t.className = '', 3000);
+  }
+
+  function initials(name) { return (name || '?').slice(0, 2).toUpperCase(); }
+
+  function setAvatar(photoBase64) {
+    const photo = document.getElementById('pf-photo');
+    const init = document.getElementById('pf-initials');
+    if (photoBase64) {
+      photo.src = photoBase64;
+      photo.style.display = 'block';
+      init.style.display = 'none';
+    } else {
+      photo.style.display = 'none';
+      init.style.display = 'flex';
+    }
+  }
+
+  // ── PHOTO UPLOAD ──────────────────────────────────────────────────────────
+  document.getElementById('photo-zone').onclick = () => document.getElementById('photo-input').click();
+
+  document.getElementById('photo-input').onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) return showToast('Image trop lourde (max 5MB)', 'error');
+
+    const progress = document.getElementById('photo-progress');
+    const fill = document.getElementById('progress-fill');
+    const label = document.getElementById('progress-label');
+    progress.style.display = 'flex';
+    fill.style.width = '20%'; label.textContent = 'Compression...';
+
+    try {
+      const base64 = await compressImage(file, 200, 0.78);
+      fill.style.width = '70%'; label.textContent = 'Sauvegarde...';
+      await updateDoc(doc(db, 'users', currentUser.uid), { photoBase64: base64 });
+      userData.photoBase64 = base64;
+      setAvatar(base64);
+      fill.style.width = '100%'; label.textContent = 'Fait !';
+      showToast('Photo mise à jour ✅', 'success');
+      setTimeout(() => { progress.style.display = 'none'; fill.style.width = '0%'; }, 1200);
+    } catch(err) {
+      showToast('Erreur : ' + err.message, 'error');
+      progress.style.display = 'none';
+    }
+    e.target.value = '';
+  };
+
+  document.getElementById('btn-remove-photo').onclick = async () => {
+    if (!confirm('Supprimer la photo de profil ?')) return;
+    await updateDoc(doc(db, 'users', currentUser.uid), { photoBase64: '' });
+    userData.photoBase64 = '';
+    setAvatar(null);
+    showToast('Photo supprimée.', 'success');
+  };
+
+  function compressImage(file, maxSize, quality) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let w = img.width, h = img.height;
+          if (w > h && w > maxSize) { h = Math.round(h * maxSize / w); w = maxSize; }
+          else if (h > w && h > maxSize) { w = Math.round(w * maxSize / h); h = maxSize; }
+          else if (w > maxSize) { h = Math.round(h * maxSize / w); w = maxSize; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ── TAG INPUT ─────────────────────────────────────────────────────────────
+  let editStackTags = [];
+  const editInput = document.getElementById('edit-stack-input');
+  const editWrapper = document.getElementById('edit-stack-wrapper');
+
+  editInput.onkeydown = (e) => {
+    if ((e.key === 'Enter' || e.key === ',') && editInput.value.trim()) {
+      e.preventDefault();
+      const val = editInput.value.trim().replace(/,$/, '');
+      if (val && !editStackTags.includes(val) && editStackTags.length < 15) {
+        editStackTags.push(val); renderEditTags(); editInput.value = '';
+      }
+    }
+    if (e.key === 'Backspace' && !editInput.value && editStackTags.length) {
+      editStackTags.pop(); renderEditTags();
+    }
+  };
+
+  function renderEditTags() {
+    document.querySelectorAll('#edit-stack-wrapper .tag').forEach(t => t.remove());
+    editStackTags.forEach((tag, i) => {
+      const el = document.createElement('span');
+      el.className = 'tag';
+      el.innerHTML = `${tag}<button type="button" onclick="removeEditTag(${i})">×</button>`;
+      editWrapper.insertBefore(el, editInput);
+    });
+  }
+  window.removeEditTag = (i) => { editStackTags.splice(i, 1); renderEditTags(); };
+
+  function statusBadge(status) {
+    const map = { open: '<span class="badge badge-open">🟢 Ouvert</span>', inprogress: '<span class="badge badge-inprogress">🟡 En cours</span>', done: '<span class="badge badge-done">⚫ Terminé</span>' };
+    return map[status] || map.open;
+  }
+
+  // ── AUTH ──────────────────────────────────────────────────────────────────
+  document.getElementById('btn-logout').onclick = async (e) => {
+    e.preventDefault();
+    await signOut(auth);
+    window.location.href = 'index.html';
+  };
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return (window.location.href = 'auth.html');
+    currentUser = user;
+
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    userData = userDoc.exists() ? userDoc.data() : {};
+
+    document.getElementById('pf-initials').textContent = initials(userData.username || user.displayName);
+    setAvatar(userData.photoBase64 || null);
+    document.getElementById('pf-name').textContent = userData.username || user.displayName || 'Anonyme';
+    document.getElementById('pf-email').textContent = user.email;
+    document.getElementById('pf-bio').textContent = userData.bio || '';
+    document.getElementById('edit-username').value = userData.username || user.displayName || '';
+    document.getElementById('edit-bio').value = userData.bio || '';
+    document.getElementById('edit-github').value = userData.github || '';
+
+    if (userData.github) {
+      document.getElementById('pf-github-wrap').style.display = 'block';
+      document.getElementById('pf-github').textContent = userData.github;
+      document.getElementById('pf-github').href = userData.github;
+    }
+
+    editStackTags = [...(userData.stack || [])];
+    renderEditTags();
+    document.getElementById('pf-stack').innerHTML = (userData.stack || []).map(s => `<span class="badge badge-stack">${s}</span>`).join('');
+
+    // ── SAVE PROFILE ──────────────────────────────────────────────────────
+    document.getElementById('btn-save-profile').onclick = async () => {
+      const btn = document.getElementById('btn-save-profile');
+      btn.disabled = true; btn.textContent = 'Sauvegarde...';
+      const username = document.getElementById('edit-username').value.trim() || userData.username || 'Anonyme';
+      const bio = document.getElementById('edit-bio').value.trim();
+      const github = document.getElementById('edit-github').value.trim();
+      try {
+        await setDoc(doc(db, 'users', user.uid), {
+          uid: user.uid, username, email: user.email, bio, github,
+          stack: [...editStackTags],
+          photoBase64: userData.photoBase64 || '',
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+        await updateProfile(user, { displayName: username });
+        userData = { ...userData, username, bio, github, stack: [...editStackTags] };
+        document.getElementById('pf-name').textContent = username;
+        document.getElementById('pf-bio').textContent = bio;
+        document.getElementById('pf-initials').textContent = initials(username);
+        document.getElementById('pf-stack').innerHTML = editStackTags.map(s => `<span class="badge badge-stack">${s}</span>`).join('');
+        if (github) {
+          document.getElementById('pf-github-wrap').style.display = 'block';
+          document.getElementById('pf-github').textContent = github;
+          document.getElementById('pf-github').href = github;
+        }
+        showToast('Profil mis à jour ✅', 'success');
+      } catch(e) { showToast('Erreur : ' + e.message, 'error'); }
+      btn.disabled = false; btn.textContent = 'Sauvegarder';
+    };
+
+    // ── MY PROJECTS ───────────────────────────────────────────────────────
+    const myQ = query(collection(db, 'projects'), where('authorUid', '==', user.uid));
+    onSnapshot(myQ, async (snap) => {
+      const projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const container = document.getElementById('my-projects');
+
+      if (!projects.length) {
+        container.innerHTML = `<div class="empty-state" style="padding:2rem">
+          <div class="icon">📋</div><h3>Aucun projet pour l'instant</h3>
+          <p style="margin-bottom:1rem">Crée ton premier projet !</p>
+          <a href="new-project.html" class="btn btn-primary">+ Nouveau projet</a></div>`;
+        return;
+      }
+
+      container.innerHTML = '';
+      for (const p of projects) {
+        const div = document.createElement('div');
+        div.className = 'my-project-card';
+        let applicantsHtml = '';
+        if ((p.applicants || []).length > 0) {
+          const applicantUsers = await Promise.all(p.applicants.map(async (uid) => {
+            const udoc = await getDoc(doc(db, 'users', uid));
+            return udoc.exists() ? { uid, ...udoc.data() } : { uid, username: 'Utilisateur' };
+          }));
+          applicantsHtml = `
+            <div style="font-size:0.78rem;color:var(--muted);margin-top:0.8rem;margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.05em">${p.applicants.length} candidature(s)</div>
+            <div class="applicant-list">
+              ${applicantUsers.map(u => `
+                <div class="applicant-item">
+                  <div class="applicant-photo">
+                    ${u.photoBase64 ? `<img src="${u.photoBase64}" alt="" />` : initials(u.username)}
+                  </div>
+                  <span class="name">${u.username || 'Anonyme'}</span>
+                  ${u.github ? `<a href="${u.github}" target="_blank" style="color:var(--accent);font-size:0.78rem">GitHub</a>` : ''}
+                  <a href="messages.html?with=${u.uid}" class="quick-msg-btn">💬</a>
+                </div>`).join('')}
+            </div>`;
+        }
+        div.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.5rem;margin-bottom:0.4rem">
+            <h4>${p.title}</h4>${statusBadge(p.status)}
+          </div>
+          <p style="color:var(--muted);font-size:0.85rem">${p.description?.slice(0,120)}${(p.description?.length||0)>120?'...':''}</p>
+          ${applicantsHtml}
+          <div class="project-actions">
+            <button class="btn btn-ghost" style="font-size:0.82rem;padding:0.4rem 0.8rem" onclick="toggleStatus('${p.id}','${p.status}')">
+              ${p.status==='open'?'🟡 Passer En cours':p.status==='inprogress'?'⚫ Marquer Terminé':'🟢 Réouvrir'}
+            </button>
+            <button class="btn btn-danger" style="font-size:0.82rem;padding:0.4rem 0.8rem" onclick="deleteProject('${p.id}')">Supprimer</button>
+          </div>`;
+        container.appendChild(div);
+      }
+    });
+
+    // ── MY APPLICATIONS ───────────────────────────────────────────────────
+    const appQ = query(collection(db, 'projects'), where('applicants', 'array-contains', user.uid));
+    onSnapshot(appQ, (snap) => {
+      const projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const container = document.getElementById('my-applications');
+      if (!projects.length) {
+        container.innerHTML = '<div style="color:var(--muted);font-size:0.9rem;padding:1rem 0">Aucune candidature pour l\'instant.</div>';
+        return;
+      }
+      container.innerHTML = projects.map(p => `
+        <div class="my-project-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:0.5rem;margin-bottom:0.3rem">
+            <h4>${p.title}</h4>${statusBadge(p.status)}
+          </div>
+          <p style="color:var(--muted);font-size:0.85rem;margin-bottom:0.6rem">Par ${p.authorName}</p>
+          <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
+            ${(p.stack||[]).slice(0,4).map(s=>`<span class="badge badge-stack">${s}</span>`).join('')}
+            <a href="messages.html?with=${p.authorUid}" class="quick-msg-btn" style="margin-left:auto">💬 Contacter le créateur</a>
+          </div>
+        </div>`).join('');
+    });
+  });
+
+  window.toggleStatus = async (id, current) => {
+    const next = current==='open'?'inprogress':current==='inprogress'?'done':'open';
+    try { await updateDoc(doc(db,'projects',id),{status:next}); showToast('Statut mis à jour.','success'); }
+    catch(e) { showToast('Erreur.','error'); }
+  };
+
+  window.deleteProject = async (id) => {
+    if (!confirm('Supprimer ce projet définitivement ?')) return;
+    try { await deleteDoc(doc(db,'projects',id)); showToast('Projet supprimé.','success'); }
+    catch(e) { showToast('Erreur : '+e.message,'error'); }
+  };
+</script>
+
+</body>
+</html>
