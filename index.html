@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StackMates | Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <span>StackMates</span>
+            </div>
+            <nav>
+                <button class="nav-item active" id="navProjects">📊 Dashboard</button>
+                <button class="nav-item" id="navMyProjects">📁 Mes Projets</button>
+                <button class="nav-item" id="navMessages">💬 Messages</button>
+                <div class="nav-divider"></div>
+                <button class="nav-item" id="navSettings">⚙️ Paramètres</button>
+            </nav>
+            <div class="user-profile">
+                <div class="avatar" id="userAvatar">?</div>
+                <div class="user-info">
+                    <p id="userName">Utilisateur</p>
+                    <button id="logout">Déconnexion</button>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="search-wrapper">
+                    <input type="text" id="search" placeholder="Rechercher un projet, une techno...">
+                </div>
+                <div class="actions">
+                    <button class="btn-primary" id="openModal">+ Nouveau Projet</button>
+                </div>
+            </header>
+
+            <div class="scroll-area">
+                <section class="stats-grid">
+                    <div class="stat-card">
+                        <span>Projets Actifs</span>
+                        <h3 id="statTotal">0</h3>
+                    </div>
+                    <div class="stat-card">
+                        <span>Collaborateurs</span>
+                        <h3>128</h3>
+                    </div>
+                    <div class="stat-card">
+                        <span>En recherche</span>
+                        <h3 style="color: #10b981;">12</h3>
+                    </div>
+                </section>
+
+                <section class="feed-section">
+                    <div class="tabs-container">
+                        <div class="tabs">
+                            <button class="tab active" data-filter="all">Tous les projets</button>
+                            <button class="tab" data-filter="recherche">Recrutement en cours</button>
+                            <button class="tab" data-filter="complet">Complet</button>
+                        </div>
+                        <div class="view-options">
+                            <button id="grid-view" class="view-btn active">🔳</button>
+                            <button id="list-view" class="view-btn">📝</button>
+                        </div>
+                    </div>
+
+                    <div id="loader" class="projects-grid">
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                    </div>
+
+                    <div id="projects" class="projects-grid" style="display: none;">
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <h3>Créer un nouveau projet</h3>
+            <input id="title" placeholder="Nom du projet">
+            <textarea id="description" placeholder="Description détaillée..."></textarea>
+            <input id="stack" placeholder="Stack technique (ex: React, Firebase)">
+            <div class="modal-actions">
+                <button class="btn-secondary" id="closeModal">Annuler</button>
+                <button class="btn-primary" id="createProject">Publier</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
