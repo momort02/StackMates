@@ -36,50 +36,56 @@
 
         <main class="main-content">
             <header class="top-bar">
+                <h2 id="view-title">Dashboard</h2>
                 <div class="search-wrapper">
-                    <input type="text" id="search" placeholder="Rechercher un projet, une techno...">
+                    <input type="text" id="search" placeholder="Rechercher...">
                 </div>
-                <div class="actions">
-                    <button class="btn-primary" id="openModal">+ Nouveau Projet</button>
-                </div>
+                <button class="btn-primary" id="openModal">+ Nouveau Projet</button>
             </header>
 
-            <div class="scroll-area">
-                <section class="stats-grid">
-                    <div class="stat-card">
-                        <span>Projets Actifs</span>
-                        <h3 id="statTotal">0</h3>
+            <div id="view-container" class="scroll-area">
+
+                <section id="view-dashboard" class="view">
+                    <div class="stats-grid">
+                        <div class="stat-card"><span>Total Projets</span>
+                            <h3 id="statTotal">0</h3>
+                        </div>
+                        <div class="stat-card"><span>Mes Projets</span>
+                            <h3 id="statMine">0</h3>
+                        </div>
+                        <div class="stat-card"><span>Messages</span>
+                            <h3 id="statMsgs">0</h3>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <span>Collaborateurs</span>
-                        <h3>128</h3>
+                    <div id="projects" class="projects-grid"></div>
+                </section>
+
+                <section id="view-my-projects" class="view" style="display:none;">
+                    <div class="section-header">
+                        <h2>Gérer mes annonces</h2>
                     </div>
-                    <div class="stat-card">
-                        <span>En recherche</span>
-                        <h3 style="color: #10b981;">12</h3>
+                    <div id="my-projects-list" class="projects-grid"></div>
+                </section>
+
+                <section id="view-messages" class="view" style="display:none;">
+                    <div class="messages-layout">
+                        <div class="conversations-list" id="conv-list">
+                            <p class="empty-hint">Aucune conversation pour le moment.</p>
+                        </div>
+                        <div class="chat-window">
+                            <p class="empty-hint">Sélectionnez une discussion</p>
+                        </div>
                     </div>
                 </section>
 
-                <section class="feed-section">
-                    <div class="tabs-container">
-                        <div class="tabs">
-                            <button class="tab active" data-filter="all">Tous les projets</button>
-                            <button class="tab" data-filter="recherche">Recrutement en cours</button>
-                            <button class="tab" data-filter="complet">Complet</button>
+                <section id="view-settings" class="view" style="display:none;">
+                    <div class="settings-card">
+                        <h3>Mon Profil</h3>
+                        <div class="input-group">
+                            <label>Nom d'affichage</label>
+                            <input type="text" id="settings-name">
                         </div>
-                        <div class="view-options">
-                            <button id="grid-view" class="view-btn active">🔳</button>
-                            <button id="list-view" class="view-btn">📝</button>
-                        </div>
-                    </div>
-
-                    <div id="loader" class="projects-grid">
-                        <div class="skeleton-card"></div>
-                        <div class="skeleton-card"></div>
-                        <div class="skeleton-card"></div>
-                    </div>
-
-                    <div id="projects" class="projects-grid" style="display: none;">
+                        <button class="btn-primary">Enregistrer les modifications</button>
                     </div>
                 </section>
             </div>

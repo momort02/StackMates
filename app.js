@@ -1,14 +1,14 @@
 import { auth, db } from "./firebase.js";
-import { 
-    signOut, 
-    onAuthStateChanged 
+import {
+    signOut,
+    onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { 
-    collection, 
-    addDoc, 
-    query, 
-    orderBy, 
-    onSnapshot 
+import {
+    collection,
+    addDoc,
+    query,
+    orderBy,
+    onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // --- Sélecteurs DOM ---
@@ -54,14 +54,14 @@ const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
 
 onSnapshot(q, (snapshot) => {
     allProjects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    
+
     // Mise à jour des statistiques
     const statTotal = document.getElementById("statTotal");
-    if(statTotal) statTotal.innerText = allProjects.length;
+    if (statTotal) statTotal.innerText = allProjects.length;
 
     // Simulation de chargement pour le feeling SaaS
     setTimeout(() => {
-        if(loader) loader.style.display = "none";
+        if (loader) loader.style.display = "none";
         projectsDiv.style.display = "grid";
         renderProjects(allProjects);
     }, 500);
@@ -109,7 +109,7 @@ createProjectBtn.onclick = async () => {
 // --- 3. Moteur de Rendu & Filtres ---
 function renderProjects(projectsArray) {
     projectsDiv.innerHTML = "";
-    
+
     if (projectsArray.length === 0) {
         projectsDiv.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #94a3b8;">Aucun projet trouvé.</p>`;
         return;
@@ -142,8 +142,8 @@ function renderProjects(projectsArray) {
 // Recherche temps réel
 searchInput.oninput = (e) => {
     const term = e.target.value.toLowerCase();
-    const filtered = allProjects.filter(p => 
-        p.title.toLowerCase().includes(term) || 
+    const filtered = allProjects.filter(p =>
+        p.title.toLowerCase().includes(term) ||
         p.stack.toLowerCase().includes(term)
     );
     renderProjects(filtered);
@@ -163,8 +163,8 @@ tabs.forEach(tab => {
 // --- 4. Utilitaires UI ---
 
 // Modal
-if(openModalBtn) openModalBtn.onclick = () => modal.style.display = "flex";
-if(closeModalBtn) closeModalBtn.onclick = closeModal;
+if (openModalBtn) openModalBtn.onclick = () => modal.style.display = "flex";
+if (closeModalBtn) closeModalBtn.onclick = closeModal;
 function closeModal() { modal.style.display = "none"; }
 
 // Toast System
@@ -194,3 +194,78 @@ function escapeHTML(str) {
     p.textContent = str;
     return p.innerHTML;
 }
+
+const navButtons = {
+    'navProjects': 'view-dashboard',
+    'navMyProjects': 'view-my-projects',
+    'navMessages': 'view-messages',
+    'navSettings': 'view-settings'
+};
+
+Object.keys(navButtons).forEach(id => {
+    document.getElementById(id).onclick = () => {
+        // Switch active class
+        document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+
+        // Switch views
+        document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+        document.getElementById(navButtons[id]).style.display = 'block';
+
+        // Update Title
+        document.getElementById('view-title').innerText = document.getElementById(id).innerText;
+    };
+});
+
+// --- Gestion Spécifique "Mes Projets" ---
+function renderMyProjects(projects) {
+    const container = document.getElementById("my-projects-list");
+    container.innerHTML = "";
+
+    const myProjects = projects.filter(p => p.ownerId === auth.currentUser?.uid);
+    document.getElementById('statMine').innerText = myProjects.length;
+
+    myProjects.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "project-card";
+        card.innerHTML = `
+            <div style="display:flex; justify-content:space-between;">
+                <span class="tag">${p.stack}</span>
+                <div>
+                    <button class="btn-edit" onclick="editProject('${p.id}')">Modifier</button>
+                    <button class="btn-delete" onclick="deleteProject('${p.id}')">Supprimer</button>
+                </div>
+            </div>
+            <h3>${p.title}</h3>
+            <p>${p.description}</p>
+            <div style="margin-top:15px;">
+                <select onchange="updateStatus('${p.id}', this.value)" class="status-select">
+                    <option value="recherche" ${p.status === 'recherche' ? 'selected' : ''}>🔍 Recherche</option>
+                    <option value="en cours" ${p.status === 'en cours' ? 'selected' : ''}>🛠️ En cours</option>
+                    <option value="termine" ${p.status === 'termine' ? 'selected' : ''}>✅ Terminé</option>
+                </select>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+// --- Fonctions de Gestion (Globales pour onclick HTML) ---
+window.deleteProject = async (id) => {
+    if (confirm("Supprimer ce projet définitivement ?")) {
+        await deleteDoc(doc(db, "projects", id));
+        showToast("Projet supprimé", "error");
+    }
+};
+
+window.updateStatus = async (id, newStatus) => {
+    await updateDoc(doc(db, "projects", id), { status: newStatus });
+    showToast("Statut mis à jour");
+};
+
+// --- Intégration dans le Snapshot existant ---
+onSnapshot(query(collection(db, "projects"), orderBy("createdAt", "desc")), (snapshot) => {
+    const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    renderProjects(projects); // Ta fonction dashboard
+    renderMyProjects(projects); // Ta fonction de gestion
+});
