@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>StackMates — Trouve ton équipe dev</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="logo.svg" />
   <style>
     .hero {
       min-height: calc(100vh - 64px);
@@ -161,6 +160,13 @@
 <style>
 #site-banner{display:none;background:var(--accent);color:#fff;text-align:center;padding:0.55rem 1rem;font-size:0.88rem;font-weight:500;position:sticky;top:64px;z-index:99}
 </style>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#6c63ff" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="StackMates" />
+  <link rel="apple-touch-icon" href="/logo.svg" />
 </head>
 <body>
 <div id="site-banner"></div>
@@ -301,6 +307,15 @@
       b.style.display = 'block';
     }
   }).catch(()=>{});
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .catch(err => console.warn('SW:', err));
+    });
+  }
 </script>
 </body>
 </html>
