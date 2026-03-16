@@ -20,12 +20,6 @@
   "categories": ["productivity", "social"],
   "shortcuts": [
     {
-      "name": "Projets",
-      "short_name": "Projets",
-      "url": "/projects.html",
-      "icons": [{ "src": "logo.svg", "sizes": "any" }]
-    },
-    {
       "name": "Messages",
       "short_name": "Messages",
       "url": "/messages.html",
